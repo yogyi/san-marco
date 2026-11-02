@@ -15,7 +15,6 @@ export default function HomePage() {
     <>
       <Hero />
 
-      <div className="mt-2 h-1.5 w-full bg-burgundy" />
 
       <ProductRail title="Most Loved" products={mostLoved} />
 
