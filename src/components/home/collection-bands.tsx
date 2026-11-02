@@ -58,11 +58,11 @@ export function CollectionBands() {
                 className="h-auto w-full object-contain transition duration-700 group-hover:scale-[1.02]"
                 sizes="(max-width:768px) 100vw, 33vw"
               />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-burgundy-deep/85 via-burgundy-deep/25 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-6 text-cream">
-                <h3 className="font-display text-3xl">{band.title}</h3>
-                <p className="mt-2 text-sm text-cream/75">{band.copy}</p>
-                <span className="mt-4 inline-block text-[11px] uppercase tracking-[0.2em] text-gold">
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-burgundy-deep/80 via-burgundy-deep/35 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-5 text-cream md:p-6">
+                <h3 className="font-display text-2xl md:text-3xl">{band.title}</h3>
+                <p className="mt-1.5 text-sm text-cream/80">{band.copy}</p>
+                <span className="mt-3 inline-block text-[11px] uppercase tracking-[0.2em] text-gold">
                   Explore →
                 </span>
               </div>
