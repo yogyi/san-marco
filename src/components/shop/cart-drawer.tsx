@@ -9,12 +9,12 @@ import { useCart, cartTotals } from "@/store/cart";
 import { formatINR } from "@/lib/utils";
 
 export function CartDrawer() {
-  const { items, isOpen, closeCart, updateQty, removeItem } = useCart();
+  const { items, isOpen, openCart, closeCart, updateQty, removeItem } = useCart();
   const { subtotal, savings, shipping, total, count } = cartTotals(items);
 
   return (
-    <Sheet open={isOpen} onOpenChange={(open) => (!open ? closeCart() : null)}>
-      <SheetContent>
+    <Sheet open={isOpen} onOpenChange={(open) => (open ? openCart() : closeCart())}>
+      <SheetContent aria-describedby={undefined}>
         <SheetHeader>
           <SheetTitle>Your Atelier Bag</SheetTitle>
           <p className="text-sm text-ink/60">

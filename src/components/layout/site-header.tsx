@@ -59,20 +59,22 @@ export function SiteHeader() {
             ))}
           </nav>
 
-          <Link href="/" className="flex flex-col items-center gap-0.5">
+          <Link href="/" className="flex items-center gap-3">
             <Image
               src="/brand/san-marco-logo.jpg"
               alt="San Marco"
-              width={72}
-              height={72}
-              className="h-14 w-14 rounded-full object-cover ring-1 ring-gold/50 md:h-16 md:w-16"
+              width={56}
+              height={56}
+              className="h-11 w-11 rounded-full object-cover ring-1 ring-gold/50 md:h-12 md:w-12"
               priority
             />
-            <span className="font-display text-xl leading-none text-burgundy md:text-2xl">
-              San Marco
-            </span>
-            <span className="hidden text-[9px] tracking-[0.28em] text-ink/55 uppercase sm:block">
-              Premium Bedding & Comforters
+            <span className="flex flex-col">
+              <span className="font-display text-xl leading-none text-burgundy md:text-2xl">
+                San Marco
+              </span>
+              <span className="mt-1 hidden text-[9px] tracking-[0.22em] text-ink/55 uppercase sm:block">
+                Premium Bedding & Comforters
+              </span>
             </span>
           </Link>
 

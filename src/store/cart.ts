@@ -74,7 +74,10 @@ export const useCart = create<CartState>()(
       },
       clear: () => set({ items: [] }),
     }),
-    { name: "san-marco-cart" }
+    {
+      name: "san-marco-cart",
+      partialize: (state) => ({ items: state.items }),
+    }
   )
 );
 
