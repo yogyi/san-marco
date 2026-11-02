@@ -52,9 +52,7 @@ export function SiteHeader() {
             <Menu className="h-5 w-5" />
           </button>
 
-          <Link href="/about" className="hidden text-[11px] uppercase tracking-[0.16em] text-burgundy/70 transition hover:text-burgundy md:inline">
-            Our Story
-          </Link>
+          <div className="hidden w-20 md:block" aria-hidden />
 
           <Link href="/" className="absolute left-1/2 flex -translate-x-1/2 items-center gap-2.5">
             <Image
