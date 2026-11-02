@@ -80,7 +80,7 @@ export function SiteHeader() {
           </Link>
 
           <div className="flex items-center gap-1 md:gap-3">
-            <nav className="mr-2 hidden items-center gap-6 text-[11px] uppercase tracking-[0.18em] text-burgundy/75 lg:flex">
+            <nav className="mr-2 hidden items-center gap-6 text-[11px] uppercase tracking-[0.18em] text-burgundy/75 md:flex">
               {links.slice(3).map((l) => (
                 <Link key={l.href} href={l.href} className="transition hover:text-burgundy">
                   {l.label}
