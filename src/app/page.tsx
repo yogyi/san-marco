@@ -1,45 +1,55 @@
 import { Hero } from "@/components/home/hero";
-import { FeaturedStrip } from "@/components/home/featured-strip";
-import { CollectionBands } from "@/components/home/collection-bands";
-import { PricingBanner } from "@/components/home/pricing-banner";
+import { ProductRail } from "@/components/home/product-rail";
+import { LookbookStrip } from "@/components/home/lookbook-strip";
+import { EditorialBanner } from "@/components/home/editorial-banner";
 import { Testimonials } from "@/components/home/testimonials";
-import { GiftingCta } from "@/components/home/gifting-cta";
-import { ProductCard } from "@/components/shop/product-card";
+import { BrandStory } from "@/components/home/brand-story";
 import { products } from "@/data/products";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
 
 export default function HomePage() {
-  const featured = products.filter((p) => p.featured).slice(0, 4);
+  const mostLoved = products.filter((p) => p.featured || p.bestseller).slice(0, 4);
+  const florals = products.filter((p) => p.category === "floral").slice(0, 4);
+  const mustHave = products.filter((p) => p.category === "solid" || p.newArrival).slice(0, 4);
 
   return (
     <>
       <Hero />
-      <FeaturedStrip />
-      <CollectionBands />
 
-      <section className="mx-auto max-w-7xl px-4 py-8 md:px-8 md:py-12">
-        <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div>
-            <p className="text-[11px] uppercase tracking-[0.24em] text-gold-deep">Most Loved</p>
-            <h2 className="mt-2 font-display text-4xl text-burgundy md:text-5xl">
-              Signature designs
-            </h2>
-          </div>
-          <Button asChild variant="outline">
-            <Link href="/shop">View all 13 designs</Link>
-          </Button>
-        </div>
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
-          {featured.map((p, i) => (
-            <ProductCard key={p.id} product={p} index={i} />
-          ))}
-        </div>
-      </section>
+      <div className="mt-2 h-1.5 w-full bg-burgundy" />
 
-      <PricingBanner />
+      <ProductRail title="Most Loved" products={mostLoved} />
+
+      <LookbookStrip />
+
+      <ProductRail
+        title="Florals & Prints"
+        products={florals}
+        viewAllHref="/shop?category=floral"
+      />
+
+      <EditorialBanner
+        eyebrow="Celebrate life, every day!"
+        title="Today is an occasion"
+        body="Starting your day, being around your loved ones, and resting well is an occasion. Dress your bed in San Marco — soft loft, beautiful colour, Made in India."
+        cta="Shop Bedding"
+        href="/shop"
+        image="/products/tiffany-peach-rust.jpg"
+      />
+
+      <EditorialBanner
+        eyebrow="The art of gifting"
+        title="Gifts made with warmth"
+        body="From festive corporate welfare to bridal surprises — every San Marco piece arrives in a reusable gift-ready carry bag."
+        cta="Explore Gifting"
+        href="/gifting"
+        image="/products/gift-bag.jpg"
+        reverse
+      />
+
+      <ProductRail title="Must Have Pieces" products={mustHave} />
+
       <Testimonials />
-      <GiftingCta />
+      <BrandStory />
     </>
   );
 }

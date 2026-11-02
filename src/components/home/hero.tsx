@@ -3,60 +3,80 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
+
+const tiles = [
+  {
+    src: "/products/sunshine-teal-stripe.jpg",
+    alt: "Sunshine Teal Stripe bedroom",
+    className: "md:col-span-2 md:row-span-2",
+    label: "Festive Bedding",
+  },
+  {
+    src: "/products/grey-blossom.jpg",
+    alt: "Grey Blossom comforter",
+    className: "",
+    label: "Florals",
+  },
+  {
+    src: "/products/tiffany-peach-rust.jpg",
+    alt: "Tiffany Peach bedroom",
+    className: "",
+    label: "New Arrivals",
+  },
+  {
+    src: "/products/sage-green.jpg",
+    alt: "Sage Green solid",
+    className: "",
+    label: "Solids",
+  },
+  {
+    src: "/products/lifestyle-set-1.jpg",
+    alt: "San Marco set",
+    className: "",
+    label: "Gift Ready",
+  },
+];
 
 export function Hero() {
   return (
-    <section className="relative min-h-[calc(100vh-7.5rem)] w-full overflow-hidden md:min-h-[calc(100vh-8.5rem)]">
-      <Image
-        src="/products/sunshine-teal-stripe.jpg"
-        alt="San Marco premium comforter in a luxury bedroom"
-        fill
-        priority
-        className="object-cover object-[center_35%]"
-        sizes="100vw"
-      />
-      <div className="absolute inset-0 bg-[#4a121c]/70" />
-      <div className="absolute inset-0 bg-gradient-to-r from-[#4a121c]/90 via-[#4a121c]/55 to-[#4a121c]/15" />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#4a121c]/70 via-transparent to-[#4a121c]/25" />
-
-      <div className="relative z-10 mx-auto flex min-h-[calc(100vh-7.5rem)] max-w-7xl flex-col justify-center px-4 py-16 md:min-h-[calc(100vh-8.5rem)] md:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
-          className="max-w-xl text-cream"
-        >
-          <p className="font-display text-6xl leading-[0.92] tracking-tight md:text-8xl">
-            San Marco
-          </p>
-          <div className="my-5 flex items-center gap-3">
-            <span className="h-px w-12 bg-gold" />
-            <span className="text-[11px] uppercase tracking-[0.28em] text-gold">
-              Premium Bedding & Comforters
-            </span>
-          </div>
-          <h1 className="font-display text-2xl leading-snug text-cream/95 md:text-3xl">
-            Wrap yourself in everyday luxury
-          </h1>
-          <p className="mt-4 max-w-md text-sm leading-relaxed text-cream/80 md:text-[15px]">
-            Soft microfibre loft, reversible designs, and gift-ready bags — the Festive Comfort
-            Collection, Made in India.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Button asChild size="lg" variant="gold">
-              <Link href="/shop">Shop the Collection</Link>
-            </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="outline"
-              className="border-cream/45 text-cream hover:border-cream hover:bg-cream/10"
-            >
-              <Link href="/collections/festive">Festive Prices</Link>
-            </Button>
-          </div>
-        </motion.div>
+    <section className="mx-auto max-w-[1400px] px-3 pt-3 md:px-6 md:pt-4">
+      <div className="grid grid-cols-2 gap-2 md:grid-cols-4 md:grid-rows-2 md:gap-3">
+        {tiles.map((tile, i) => (
+          <motion.div
+            key={tile.src}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: i * 0.06, duration: 0.5 }}
+            className={`group relative min-h-[180px] overflow-hidden md:min-h-0 ${tile.className} ${
+              i === 0 ? "aspect-[4/3] md:aspect-auto md:h-full" : "aspect-square"
+            }`}
+          >
+            <Image
+              src={tile.src}
+              alt={tile.alt}
+              fill
+              priority={i < 2}
+              className="object-cover transition duration-700 group-hover:scale-105"
+              sizes="(max-width:768px) 50vw, 40vw"
+            />
+            <div className="absolute inset-0 bg-black/10 transition group-hover:bg-black/20" />
+            {i === 0 && (
+              <div className="absolute inset-0 flex items-end justify-end p-4 md:p-8">
+                <Link
+                  href="/shop"
+                  className="bg-black/70 px-6 py-3 text-[12px] font-semibold uppercase tracking-[0.18em] text-white backdrop-blur-sm transition hover:bg-burgundy"
+                >
+                  Shop Now
+                </Link>
+              </div>
+            )}
+            {i !== 0 && (
+              <span className="absolute bottom-3 left-3 text-[11px] font-medium uppercase tracking-[0.14em] text-white drop-shadow">
+                {tile.label}
+              </span>
+            )}
+          </motion.div>
+        ))}
       </div>
     </section>
   );
