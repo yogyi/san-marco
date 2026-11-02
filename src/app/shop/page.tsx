@@ -38,8 +38,8 @@ export default async function ShopPage({
     <div className="mx-auto max-w-7xl px-4 py-12 md:px-8">
       <div className="mb-10 max-w-2xl">
         <p className="text-[11px] uppercase tracking-[0.24em] text-gold-deep">Shop</p>
-        <h1 className="mt-2 font-display text-5xl text-ink">The Collection</h1>
-        <p className="mt-3 text-muted">
+        <h1 className="mt-2 font-display text-5xl text-burgundy">The Collection</h1>
+        <p className="mt-3 text-ink/65">
           13 designs · Double sets from ₹1,999 · Complimentary shipping above ₹1,999
         </p>
       </div>

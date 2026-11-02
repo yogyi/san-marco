@@ -35,17 +35,17 @@ export default async function ProductPage({
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 md:px-8 md:py-14">
       <nav className="mb-8 text-xs uppercase tracking-[0.14em] text-ink/45">
-        <Link href="/shop" className="hover:text-ink">
+        <Link href="/shop" className="hover:text-burgundy">
           Shop
         </Link>
         <span className="mx-2">/</span>
-        <span className="text-ink">{product.name}</span>
+        <span className="text-burgundy">{product.name}</span>
       </nav>
 
       <ProductDetail product={product} />
 
       <section className="mt-20">
-        <h2 className="font-display text-3xl text-ink">You may also love</h2>
+        <h2 className="font-display text-3xl text-burgundy">You may also love</h2>
         <div className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
           {related.map((p, i) => (
             <ProductCard key={p.id} product={p} index={i} />

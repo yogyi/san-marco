@@ -28,27 +28,27 @@ export function ShopFilters({
   };
 
   return (
-    <div className="flex flex-col gap-4 border-y border-sand py-4 md:flex-row md:items-center md:justify-between">
+    <div className="flex flex-col gap-4 border-y border-gold/20 py-4 md:flex-row md:items-center md:justify-between">
       <div className="flex flex-wrap gap-2">
         {categories.map((c) => (
           <Link
             key={c.label}
             href={buildHref(c.id, activeSort)}
             className={cn(
-              "px-4 py-2 text-[11px] uppercase tracking-[0.14em] transition",
+              "px-4 py-2 text-[11px] uppercase tracking-[0.16em] transition",
               activeCategory === c.id || (!activeCategory && !c.id)
-                ? "bg-ink text-ivory"
-                : "border border-ink/10 text-ink/65 hover:border-gold hover:text-gold-deep"
+                ? "bg-burgundy text-cream"
+                : "border border-burgundy/15 text-burgundy/70 hover:border-burgundy/40"
             )}
           >
             {c.label}
           </Link>
         ))}
       </div>
-      <div className="flex items-center gap-4 text-sm text-muted">
+      <div className="flex items-center gap-4 text-sm text-ink/55">
         <span>{count} designs</span>
         <select
-          className="border border-sand bg-cream px-3 py-2 text-xs uppercase tracking-wider text-ink outline-none"
+          className="border border-burgundy/15 bg-ivory/70 px-3 py-2 text-xs uppercase tracking-wider text-burgundy outline-none"
           value={activeSort}
           onChange={(e) => {
             window.location.href = buildHref(activeCategory, e.target.value);

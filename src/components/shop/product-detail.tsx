@@ -37,7 +37,7 @@ export function ProductDetail({ product }: { product: Product }) {
               onClick={() => setActiveImage(src)}
               className={cn(
                 "relative aspect-square overflow-hidden border",
-                activeImage === src ? "border-ink" : "border-transparent opacity-80"
+                activeImage === src ? "border-burgundy" : "border-transparent opacity-80"
               )}
             >
               <Image src={src} alt="" fill className="object-cover" sizes="120px" />
@@ -50,19 +50,19 @@ export function ProductDetail({ product }: { product: Product }) {
         <p className="text-[11px] uppercase tracking-[0.22em] text-gold-deep">
           {product.collection} · {product.designCode}
         </p>
-        <h1 className="mt-2 font-display text-5xl text-ink">{product.name}</h1>
+        <h1 className="mt-2 font-display text-5xl text-burgundy">{product.name}</h1>
         <p className="mt-3 text-ink/65">{product.tagline}</p>
 
         <div className="mt-6 flex items-baseline gap-3">
-          <span className="font-display text-4xl text-ink">{formatINR(variant.price)}</span>
+          <span className="font-display text-4xl text-burgundy">{formatINR(variant.price)}</span>
           <span className="text-ink/40 line-through">{formatINR(variant.mrp)}</span>
-          <span className="bg-gold/20 px-2 py-1 text-[10px] uppercase tracking-wider text-ink">
+          <span className="bg-gold/20 px-2 py-1 text-[10px] uppercase tracking-wider text-burgundy">
             Save {savePct}%
           </span>
         </div>
 
         <div className="mt-8">
-          <p className="mb-3 text-[11px] uppercase tracking-[0.18em] text-ink/70">
+          <p className="mb-3 text-[11px] uppercase tracking-[0.18em] text-burgundy/70">
             Choose size
           </p>
           <div className="space-y-2">
@@ -73,16 +73,16 @@ export function ProductDetail({ product }: { product: Product }) {
                 className={cn(
                   "flex w-full items-center justify-between border px-4 py-3 text-left transition",
                   variantId === v.id
-                    ? "border-ink bg-sand/60"
-                    : "border-ink/10 hover:border-ink/35"
+                    ? "border-burgundy bg-burgundy/[0.04]"
+                    : "border-burgundy/15 hover:border-burgundy/35"
                 )}
               >
                 <div>
-                  <p className="font-medium text-ink">{v.label}</p>
+                  <p className="font-medium text-burgundy">{v.label}</p>
                   <p className="text-xs text-ink/55">{v.description}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-ink">{formatINR(v.price)}</p>
+                  <p className="text-burgundy">{formatINR(v.price)}</p>
                   <p className="text-xs text-ink/40 line-through">{formatINR(v.mrp)}</p>
                 </div>
               </button>
@@ -92,9 +92,9 @@ export function ProductDetail({ product }: { product: Product }) {
         </div>
 
         <div className="mt-8 flex flex-wrap items-center gap-3">
-          <div className="inline-flex items-center border border-ink/10">
+          <div className="inline-flex items-center border border-burgundy/15">
             <button
-              className="px-3 py-3 text-ink"
+              className="px-3 py-3 text-burgundy"
               onClick={() => setQty((q) => Math.max(1, q - 1))}
               aria-label="Decrease"
             >
@@ -102,7 +102,7 @@ export function ProductDetail({ product }: { product: Product }) {
             </button>
             <span className="w-10 text-center">{qty}</span>
             <button
-              className="px-3 py-3 text-ink"
+              className="px-3 py-3 text-burgundy"
               onClick={() => setQty((q) => q + 1)}
               aria-label="Increase"
             >
@@ -141,19 +141,19 @@ export function ProductDetail({ product }: { product: Product }) {
 
         <div className="mt-8 space-y-4 text-sm text-ink/65">
           <div>
-            <p className="text-[11px] uppercase tracking-[0.16em] text-ink/70">Fabric</p>
+            <p className="text-[11px] uppercase tracking-[0.16em] text-burgundy/70">Fabric</p>
             <p className="mt-1">{product.fabric}</p>
           </div>
           <div>
-            <p className="text-[11px] uppercase tracking-[0.16em] text-ink/70">Filling</p>
+            <p className="text-[11px] uppercase tracking-[0.16em] text-burgundy/70">Filling</p>
             <p className="mt-1">{product.filling}</p>
           </div>
           <div>
-            <p className="text-[11px] uppercase tracking-[0.16em] text-ink/70">Colours</p>
+            <p className="text-[11px] uppercase tracking-[0.16em] text-burgundy/70">Colours</p>
             <p className="mt-1">{product.colours}</p>
           </div>
           <div>
-            <p className="text-[11px] uppercase tracking-[0.16em] text-ink/70">Wash care</p>
+            <p className="text-[11px] uppercase tracking-[0.16em] text-burgundy/70">Wash care</p>
             <p className="mt-1">{product.washCare}</p>
           </div>
         </div>

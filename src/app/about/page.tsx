@@ -11,7 +11,7 @@ export default function AboutPage() {
       <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
         <div>
           <p className="text-[11px] uppercase tracking-[0.24em] text-gold-deep">Our Story</p>
-          <h1 className="mt-3 font-display text-5xl text-ink md:text-6xl">
+          <h1 className="mt-3 font-display text-5xl text-burgundy md:text-6xl">
             San Marco
           </h1>
           <p className="mt-2 text-[11px] uppercase tracking-[0.22em] text-ink/45">

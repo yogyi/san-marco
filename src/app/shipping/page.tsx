@@ -5,7 +5,7 @@ export const metadata = {
 export default function ShippingPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-16 md:px-8">
-      <h1 className="font-display text-5xl text-ink">Shipping & Returns</h1>
+      <h1 className="font-display text-5xl text-burgundy">Shipping & Returns</h1>
       <div className="mt-8 space-y-6 text-ink/70 leading-relaxed">
         <p>
           Complimentary shipping on orders above ₹1,999. Orders below that threshold include a

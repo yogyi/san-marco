@@ -31,29 +31,29 @@ export function SiteHeader() {
 
   return (
     <>
-      <div className="border-b border-sand bg-cream text-center text-[11px] tracking-[0.2em] text-ink/70 uppercase py-2.5">
+      <div className="bg-burgundy text-center text-[11px] tracking-[0.22em] text-cream/90 uppercase py-2.5">
         Festive Comfort Collection · Free shipping above ₹1,999 · Gift bag with every piece
       </div>
       <header
         className={cn(
           "sticky top-0 z-40 transition-all duration-500",
           scrolled
-            ? "border-b border-sand bg-ivory/95 backdrop-blur-md shadow-soft"
-            : "bg-ivory/90 backdrop-blur-sm"
+            ? "border-b border-gold/25 bg-cream/90 backdrop-blur-md shadow-[0_10px_40px_-28px_rgba(90,24,36,0.45)]"
+            : "bg-cream/70 backdrop-blur-sm"
         )}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 md:px-8">
           <button
-            className="md:hidden p-2 text-ink"
+            className="md:hidden p-2 text-burgundy"
             aria-label="Open menu"
             onClick={() => setMobileOpen(true)}
           >
             <Menu className="h-5 w-5" />
           </button>
 
-          <nav className="hidden md:flex items-center gap-6 text-[11px] uppercase tracking-[0.16em] text-ink/60">
+          <nav className="hidden md:flex items-center gap-6 text-[11px] uppercase tracking-[0.18em] text-burgundy/75">
             {links.slice(0, 3).map((l) => (
-              <Link key={l.href} href={l.href} className="transition hover:text-gold-deep">
+              <Link key={l.href} href={l.href} className="hover:text-burgundy transition">
                 {l.label}
               </Link>
             ))}
@@ -65,42 +65,42 @@ export function SiteHeader() {
               alt="San Marco"
               width={56}
               height={56}
-              className="h-11 w-11 rounded-full object-cover ring-1 ring-gold/40 md:h-12 md:w-12"
+              className="h-11 w-11 rounded-full object-cover ring-1 ring-gold/50 md:h-12 md:w-12"
               priority
             />
             <span className="flex flex-col">
-              <span className="font-display text-xl leading-none text-ink md:text-2xl">
+              <span className="font-display text-xl leading-none text-burgundy md:text-2xl">
                 San Marco
               </span>
-              <span className="mt-1 hidden text-[9px] tracking-[0.2em] text-muted uppercase sm:block">
+              <span className="mt-1 hidden text-[9px] tracking-[0.22em] text-ink/55 uppercase sm:block">
                 Premium Bedding & Comforters
               </span>
             </span>
           </Link>
 
           <div className="flex items-center gap-1 md:gap-3">
-            <nav className="mr-2 hidden items-center gap-6 text-[11px] uppercase tracking-[0.16em] text-ink/60 lg:flex">
+            <nav className="hidden lg:flex items-center gap-6 text-[11px] uppercase tracking-[0.18em] text-burgundy/75 mr-2">
               {links.slice(3).map((l) => (
-                <Link key={l.href} href={l.href} className="transition hover:text-gold-deep">
+                <Link key={l.href} href={l.href} className="hover:text-burgundy transition">
                   {l.label}
                 </Link>
               ))}
             </nav>
             <Link
               href="/shop"
-              className="hidden p-2 text-ink/55 transition hover:text-ink sm:inline-flex"
+              className="hidden sm:inline-flex p-2 text-burgundy/70 hover:text-burgundy"
               aria-label="Search shop"
             >
               <Search className="h-5 w-5" />
             </Link>
             <button
               onClick={openCart}
-              className="relative p-2 text-ink"
+              className="relative p-2 text-burgundy"
               aria-label="Open cart"
             >
               <ShoppingBag className="h-5 w-5" />
               {count > 0 && (
-                <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center bg-gold px-1 text-[10px] font-semibold text-ink">
+                <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center bg-gold px-1 text-[10px] font-semibold text-burgundy-deep">
                   {count}
                 </span>
               )}
@@ -112,15 +112,15 @@ export function SiteHeader() {
       {mobileOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
           <button
-            className="absolute inset-0 bg-ink/35"
+            className="absolute inset-0 bg-burgundy-deep/40"
             aria-label="Close menu overlay"
             onClick={() => setMobileOpen(false)}
           />
-          <div className="absolute left-0 top-0 flex h-full w-[82%] max-w-sm flex-col bg-ivory p-6 shadow-xl">
+          <div className="absolute left-0 top-0 flex h-full w-[82%] max-w-sm flex-col bg-cream p-6 shadow-xl">
             <div className="mb-8 flex items-center justify-between">
-              <span className="font-display text-2xl text-ink">San Marco</span>
+              <span className="font-display text-2xl text-burgundy">San Marco</span>
               <button onClick={() => setMobileOpen(false)} aria-label="Close menu">
-                <X className="h-5 w-5 text-ink" />
+                <X className="h-5 w-5 text-burgundy" />
               </button>
             </div>
             <nav className="flex flex-col gap-4">
@@ -129,7 +129,7 @@ export function SiteHeader() {
                   key={l.href}
                   href={l.href}
                   onClick={() => setMobileOpen(false)}
-                  className="border-b border-sand pb-3 font-display text-xl text-ink"
+                  className="border-b border-gold/20 pb-3 font-display text-xl text-burgundy"
                 >
                   {l.label}
                 </Link>
@@ -137,7 +137,7 @@ export function SiteHeader() {
               <Link
                 href="/contact"
                 onClick={() => setMobileOpen(false)}
-                className="pt-2 text-sm tracking-wide text-muted"
+                className="pt-2 text-sm tracking-wide text-burgundy/70"
               >
                 Contact & WhatsApp
               </Link>
