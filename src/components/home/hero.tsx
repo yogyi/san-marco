@@ -62,7 +62,7 @@ export function Hero() {
 
           <div className="mt-6">
             <Button asChild size="lg" variant="gold" className="min-w-[9.5rem] tracking-[0.12em]">
-              <Link href="/shop?collection=alberta">Shop Alberta</Link>
+              <Link href="/shop">Shop Collection</Link>
             </Button>
           </div>
         </motion.div>
