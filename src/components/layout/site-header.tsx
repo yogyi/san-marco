@@ -7,7 +7,7 @@ import { Menu, Search, ShoppingBag, X } from "lucide-react";
 import { useCart, cartTotals } from "@/store/cart";
 import { cn } from "@/lib/utils";
 
-const mobileLinks = [
+const links = [
   { href: "/shop", label: "Shop All" },
   { href: "/shop?collection=venice", label: "Venice" },
   { href: "/shop?collection=alberta", label: "Alberta" },
@@ -32,63 +32,76 @@ export function SiteHeader() {
 
   return (
     <>
-      <div className="bg-burgundy py-2 text-center text-[10px] uppercase tracking-[0.18em] text-cream/90 md:text-[11px]">
+      <div className="bg-burgundy text-center text-[11px] tracking-[0.22em] text-cream/90 uppercase py-2.5">
         Festive Comfort Collection · Free shipping above ₹1,999 · Gift bag with every piece
       </div>
       <header
         className={cn(
           "sticky top-0 z-40 transition-all duration-500",
           scrolled
-            ? "border-b border-gold/20 bg-cream/95 backdrop-blur-md shadow-sm"
-            : "bg-cream/90 backdrop-blur-sm"
+            ? "border-b border-gold/25 bg-cream/90 backdrop-blur-md shadow-[0_10px_40px_-28px_rgba(90,24,36,0.45)]"
+            : "bg-cream/70 backdrop-blur-sm"
         )}
       >
-        <div className="relative mx-auto grid max-w-[1400px] grid-cols-3 items-center px-4 py-2.5 md:px-8">
-          <div className="justify-self-start">
-            <button
-              className="p-2 text-burgundy md:hidden"
-              aria-label="Open menu"
-              onClick={() => setMobileOpen(true)}
-            >
-              <Menu className="h-5 w-5" />
-            </button>
-          </div>
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 md:px-8">
+          <button
+            className="p-2 text-burgundy md:hidden"
+            aria-label="Open menu"
+            onClick={() => setMobileOpen(true)}
+          >
+            <Menu className="h-5 w-5" />
+          </button>
 
-          <Link href="/" className="justify-self-center flex items-center gap-2.5">
+          <nav className="hidden md:flex items-center gap-6 text-[11px] uppercase tracking-[0.18em] text-burgundy/75">
+            {links.slice(0, 3).map((l) => (
+              <Link key={l.href} href={l.href} className="transition hover:text-burgundy">
+                {l.label}
+              </Link>
+            ))}
+          </nav>
+
+          <Link href="/" className="flex items-center gap-3">
             <Image
               src="/brand/san-marco-logo.jpg"
               alt="San Marco"
-              width={44}
-              height={44}
-              className="h-9 w-9 rounded-full object-cover ring-1 ring-gold/40 md:h-10 md:w-10"
+              width={56}
+              height={56}
+              className="h-11 w-11 rounded-full object-cover ring-1 ring-gold/50 md:h-12 md:w-12"
               priority
             />
             <span className="flex flex-col">
-              <span className="font-display text-lg leading-none text-burgundy md:text-xl">
+              <span className="font-display text-xl leading-none text-burgundy md:text-2xl">
                 San Marco
               </span>
-              <span className="mt-0.5 hidden text-[8px] uppercase tracking-[0.2em] text-ink/50 sm:block">
+              <span className="mt-1 hidden text-[9px] tracking-[0.22em] text-ink/55 uppercase sm:block">
                 Premium Bedding & Comforters
               </span>
             </span>
           </Link>
 
-          <div className="justify-self-end flex items-center gap-1">
+          <div className="flex items-center gap-1 md:gap-3">
+            <nav className="mr-2 hidden items-center gap-6 text-[11px] uppercase tracking-[0.18em] text-burgundy/75 lg:flex">
+              {links.slice(3).map((l) => (
+                <Link key={l.href} href={l.href} className="transition hover:text-burgundy">
+                  {l.label}
+                </Link>
+              ))}
+            </nav>
             <Link
               href="/shop"
               className="hidden p-2 text-burgundy/70 transition hover:text-burgundy sm:inline-flex"
               aria-label="Search shop"
             >
-              <Search className="h-4 w-4" />
+              <Search className="h-5 w-5" />
             </Link>
             <button
               onClick={openCart}
               className="relative p-2 text-burgundy"
               aria-label="Open cart"
             >
-              <ShoppingBag className="h-4 w-4" />
+              <ShoppingBag className="h-5 w-5" />
               {count > 0 && (
-                <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center bg-gold px-1 text-[9px] font-semibold text-burgundy-deep">
+                <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center bg-gold px-1 text-[10px] font-semibold text-burgundy-deep">
                   {count}
                 </span>
               )}
@@ -112,7 +125,7 @@ export function SiteHeader() {
               </button>
             </div>
             <nav className="flex flex-col gap-4">
-              {mobileLinks.map((l) => (
+              {links.map((l) => (
                 <Link
                   key={l.href}
                   href={l.href}
