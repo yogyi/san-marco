@@ -33,7 +33,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
-          className="absolute left-5 top-[16%] w-[min(70%,16rem)]"
+          className="absolute left-5 top-[20%] w-[min(70%,16rem)]"
         >
           <p className="text-[10px] font-medium uppercase tracking-[0.36em] text-gold-deep">
             Alberta Collection
