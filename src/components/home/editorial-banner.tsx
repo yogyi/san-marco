@@ -11,6 +11,7 @@ export function EditorialBanner({
   image,
   reverse = false,
   tone = "sand",
+  imageFit = "contain",
 }: {
   eyebrow?: string;
   title: string;
@@ -20,6 +21,7 @@ export function EditorialBanner({
   image: string;
   reverse?: boolean;
   tone?: "sand" | "blush" | "sage";
+  imageFit?: "contain" | "cover";
 }) {
   const stage =
     tone === "blush"
@@ -44,21 +46,35 @@ export function EditorialBanner({
         )}
       >
         {/* Image stage */}
-        <div className={cn("relative min-h-[340px] bg-gradient-to-br p-6 md:min-h-[520px] md:p-10", stage)}>
-          <span aria-hidden className="absolute left-5 top-5 h-5 w-5 border-l border-t border-gold/55 md:left-8 md:top-8" />
-          <span aria-hidden className="absolute right-5 top-5 h-5 w-5 border-r border-t border-gold/55 md:right-8 md:top-8" />
-          <span aria-hidden className="absolute bottom-5 left-5 h-5 w-5 border-b border-l border-gold/55 md:bottom-8 md:left-8" />
-          <span aria-hidden className="absolute bottom-5 right-5 h-5 w-5 border-b border-r border-gold/55 md:bottom-8 md:right-8" />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,rgba(42,28,31,0.06)_100%)]"
-          />
-          <div className="relative h-full min-h-[292px] w-full md:min-h-[440px]">
+        <div
+          className={cn(
+            "relative min-h-[340px] md:min-h-[520px]",
+            imageFit === "cover" ? "overflow-hidden" : cn("bg-gradient-to-br p-6 md:p-10", stage)
+          )}
+        >
+          {imageFit === "contain" ? (
+            <>
+              <span aria-hidden className="absolute left-5 top-5 h-5 w-5 border-l border-t border-gold/55 md:left-8 md:top-8" />
+              <span aria-hidden className="absolute right-5 top-5 h-5 w-5 border-r border-t border-gold/55 md:right-8 md:top-8" />
+              <span aria-hidden className="absolute bottom-5 left-5 h-5 w-5 border-b border-l border-gold/55 md:bottom-8 md:left-8" />
+              <span aria-hidden className="absolute bottom-5 right-5 h-5 w-5 border-b border-r border-gold/55 md:bottom-8 md:right-8" />
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,rgba(42,28,31,0.06)_100%)]"
+              />
+            </>
+          ) : null}
+          <div className={cn("relative h-full w-full", imageFit === "contain" ? "min-h-[292px] md:min-h-[440px]" : "min-h-[340px] md:min-h-[520px]")}>
             <Image
               src={image}
               alt=""
               fill
-              className="object-contain object-center drop-shadow-[0_22px_40px_rgba(42,28,31,0.16)]"
+              className={cn(
+                "object-center",
+                imageFit === "cover"
+                  ? "object-cover"
+                  : "object-contain drop-shadow-[0_22px_40px_rgba(42,28,31,0.16)]"
+              )}
               sizes="(max-width:768px) 100vw, 50vw"
             />
           </div>
