@@ -1,5 +1,6 @@
 import { Hero } from "@/components/home/hero";
 import { CircleCategories } from "@/components/home/circle-categories";
+import { MarqueeStrip } from "@/components/home/marquee-strip";
 import { ProductRail } from "@/components/home/product-rail";
 import { LookbookStrip } from "@/components/home/lookbook-strip";
 import { EditorialBanner } from "@/components/home/editorial-banner";
@@ -17,6 +18,8 @@ export default function HomePage() {
       <CircleCategories />
 
       <Hero />
+
+      <MarqueeStrip />
 
       <ProductRail
         title="Most Loved"
