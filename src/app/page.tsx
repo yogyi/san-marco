@@ -18,12 +18,19 @@ export default function HomePage() {
 
       <Hero />
 
-      <ProductRail title="Most Loved" products={mostLoved} />
+      <ProductRail
+        title="Most Loved"
+        eyebrow="Bestsellers"
+        subtitle="The designs guests notice first — soft loft, gift-ready finish."
+        products={mostLoved}
+      />
 
       <LookbookStrip />
 
       <ProductRail
         title="Alberta"
+        eyebrow="Floral Prints"
+        subtitle="Quiet gardens for the bed — bloom-soft microfibre, serene colour."
         products={alberta}
         viewAllHref="/shop?collection=alberta"
       />
@@ -49,6 +56,8 @@ export default function HomePage() {
 
       <ProductRail
         title="Tiffany"
+        eyebrow="Two-Tone Solids"
+        subtitle="Calm colour stories — reversible comfort with a polished finish."
         products={tiffany}
         viewAllHref="/shop?collection=tiffany"
       />

@@ -30,15 +30,20 @@ export function EditorialBanner({
         </div>
         <div className="px-6 py-12 md:px-14 md:py-16">
           {eyebrow && (
-            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-burgundy">
+            <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-gold-deep">
               {eyebrow}
             </p>
           )}
-          <h2 className="mt-3 font-display text-4xl text-ink md:text-5xl">{title}</h2>
-          <p className="mt-4 max-w-md text-[15px] leading-relaxed text-muted">{body}</p>
+          <h2 className="mt-4 font-display text-4xl leading-[1.05] tracking-[-0.01em] text-burgundy md:text-5xl lg:text-[3.35rem]">
+            {title}
+          </h2>
+          <span aria-hidden className="mt-3 block font-display text-lg text-gold/80">
+            ✦
+          </span>
+          <p className="mt-5 max-w-md text-[15px] leading-relaxed text-muted">{body}</p>
           <Link
             href={href}
-            className="mt-8 inline-block border border-ink px-6 py-3 text-[12px] font-semibold uppercase tracking-[0.14em] text-ink transition hover:bg-ink hover:text-white"
+            className="mt-9 inline-block border border-burgundy/80 px-8 py-3.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-burgundy transition hover:bg-burgundy hover:text-cream"
           >
             {cta}
           </Link>

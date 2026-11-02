@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { SectionHeading } from "@/components/home/section-heading";
 
 const quotes = [
   {
@@ -23,19 +24,17 @@ const quotes = [
 
 export function Testimonials() {
   return (
-    <section className="bg-[#f7f5f2] py-14 md:py-20">
+    <section className="bg-[#f7f5f2] py-16 md:py-24">
       <div className="mx-auto max-w-[1400px] px-4 md:px-8">
-        <p className="text-center text-[11px] font-semibold uppercase tracking-[0.2em] text-burgundy">
-          Customer Reviews
+        <SectionHeading
+          title="What Our Customers Say"
+          eyebrow="Customer Reviews"
+          subtitle="Real stories from homes dressed in San Marco."
+        />
+        <p className="mt-4 text-center font-display text-xl text-burgundy/80">
+          4.9 · Loved across India
         </p>
-        <h2 className="mt-2 text-center text-3xl font-semibold text-ink">
-          What Our Customers Say
-        </h2>
-        <p className="mt-2 text-center text-sm text-muted">
-          Real stories from people who transformed their home.
-        </p>
-        <p className="mt-3 text-center text-sm font-medium text-ink">4.9 · Loved across India</p>
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {quotes.map((q, i) => (
             <motion.blockquote
               key={q.name}
@@ -43,10 +42,12 @@ export function Testimonials() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.05 }}
-              className="bg-white p-5 shadow-sm"
+              className="border border-gold/20 bg-white/80 p-6"
             >
-              <p className="text-sm leading-relaxed text-ink/80">“{q.text}”</p>
-              <footer className="mt-4 text-xs font-semibold uppercase tracking-wider text-muted">
+              <p className="font-display text-lg leading-relaxed text-ink/85">
+                “{q.text}”
+              </p>
+              <footer className="mt-5 text-[10px] font-semibold uppercase tracking-[0.18em] text-gold-deep">
                 {q.name} · Verified
               </footer>
             </motion.blockquote>
