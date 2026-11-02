@@ -28,7 +28,7 @@ export function Hero() {
       />
 
       {/* Mobile copy — sits in open wall space, no panel */}
-      <div className="relative z-10 mx-auto flex min-h-[78svh] max-w-7xl flex-col justify-start px-5 pt-8 md:hidden">
+      <div className="relative z-10 mx-auto flex min-h-[78svh] max-w-7xl flex-col justify-start px-5 pt-16 md:hidden">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
