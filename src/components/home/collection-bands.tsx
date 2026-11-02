@@ -30,7 +30,7 @@ export function CollectionBands() {
     <section className="mx-auto max-w-7xl px-4 py-20 md:px-8">
       <div className="mb-10 max-w-2xl">
         <p className="text-[11px] uppercase tracking-[0.24em] text-gold-deep">The Edit</p>
-        <h2 className="mt-2 font-display text-4xl text-burgundy md:text-5xl">
+        <h2 className="mt-2 font-display text-4xl text-ink md:text-5xl">
           Thirteen designs. One signature loft.
         </h2>
         <p className="mt-3 text-ink/65">

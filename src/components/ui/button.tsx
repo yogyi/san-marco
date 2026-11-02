@@ -4,17 +4,19 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/50 disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
         default:
-          "bg-burgundy text-cream hover:bg-burgundy-deep shadow-[0_10px_30px_-18px_rgba(90,24,36,0.8)]",
-        gold: "bg-gold text-burgundy-deep hover:bg-gold-soft",
+          "bg-ink text-ivory hover:bg-ink/90 shadow-soft",
+        gold: "bg-[#c9a86a] text-ink hover:bg-[#d4bc7d]",
+        burgundy:
+          "bg-burgundy text-ivory hover:bg-burgundy-deep",
         outline:
-          "border border-burgundy/30 bg-transparent text-burgundy hover:border-burgundy hover:bg-burgundy/5",
-        ghost: "text-burgundy hover:bg-burgundy/5",
-        cream: "bg-cream text-burgundy hover:bg-ivory",
+          "border border-ink/15 bg-transparent text-ink hover:border-gold hover:text-gold-deep",
+        ghost: "text-ink/70 hover:bg-sand/70 hover:text-ink",
+        cream: "bg-cream text-ink hover:bg-sand",
       },
       size: {
         default: "h-11 px-6",

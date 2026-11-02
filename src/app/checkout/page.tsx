@@ -44,7 +44,7 @@ export default function CheckoutPage() {
   if (items.length === 0) {
     return (
       <div className="mx-auto max-w-xl px-4 py-24 text-center">
-        <h1 className="font-display text-4xl text-burgundy">Your bag is empty</h1>
+        <h1 className="font-display text-4xl text-ink">Your bag is empty</h1>
         <p className="mt-3 text-ink/60">Add a design before checking out.</p>
         <Button asChild className="mt-8">
           <Link href="/shop">Browse Collection</Link>
@@ -74,7 +74,7 @@ export default function CheckoutPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 md:px-8">
-      <h1 className="font-display text-5xl text-burgundy">Checkout</h1>
+      <h1 className="font-display text-5xl text-ink">Checkout</h1>
       <p className="mt-2 text-ink/60">A calm, three-step path — shipping, payment, review.</p>
 
       <ol className="mt-8 flex gap-2 md:gap-4">
@@ -87,7 +87,7 @@ export default function CheckoutPage() {
             key={s.n}
             className={cn(
               "flex-1 border-b-2 pb-3 text-[11px] uppercase tracking-[0.16em]",
-              step >= s.n ? "border-burgundy text-burgundy" : "border-burgundy/15 text-ink/40"
+              step >= s.n ? "border-ink text-ink" : "border-ink/10 text-ink/40"
             )}
           >
             0{s.n} · {s.label}
@@ -99,7 +99,7 @@ export default function CheckoutPage() {
         <div className="border border-gold/20 bg-cream/80 p-6 md:p-8">
           {step === 1 && (
             <div className="space-y-5">
-              <h2 className="font-display text-3xl text-burgundy">Shipping details</h2>
+              <h2 className="font-display text-3xl text-ink">Shipping details</h2>
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2 md:col-span-2">
                   <Label htmlFor="name">Full name</Label>
@@ -185,7 +185,7 @@ export default function CheckoutPage() {
 
           {step === 2 && (
             <div className="space-y-5">
-              <h2 className="font-display text-3xl text-burgundy">Payment</h2>
+              <h2 className="font-display text-3xl text-ink">Payment</h2>
               <p className="text-sm text-ink/60">
                 Demo checkout — no real charge. Choose how you would like to pay.
               </p>
@@ -203,20 +203,20 @@ export default function CheckoutPage() {
                     className={cn(
                       "flex w-full items-center justify-between border px-4 py-4 text-left",
                       payment === opt.id
-                        ? "border-burgundy bg-burgundy/[0.04]"
-                        : "border-burgundy/15"
+                        ? "border-ink bg-sand/60"
+                        : "border-ink/10"
                     )}
                   >
                     <div>
-                      <p className="font-medium text-burgundy">{opt.title}</p>
+                      <p className="font-medium text-ink">{opt.title}</p>
                       <p className="text-xs text-ink/55">{opt.desc}</p>
                     </div>
                     <span
                       className={cn(
                         "h-4 w-4 rounded-full border",
                         payment === opt.id
-                          ? "border-burgundy bg-burgundy"
-                          : "border-burgundy/30"
+                          ? "border-ink bg-ink"
+                          : "border-ink/20"
                       )}
                     />
                   </button>
@@ -235,9 +235,9 @@ export default function CheckoutPage() {
 
           {step === 3 && (
             <div className="space-y-5">
-              <h2 className="font-display text-3xl text-burgundy">Review & place</h2>
+              <h2 className="font-display text-3xl text-ink">Review & place</h2>
               <div className="border border-gold/20 bg-ivory/50 p-4 text-sm text-ink/70 space-y-1">
-                <p className="font-medium text-burgundy">{form.name}</p>
+                <p className="font-medium text-ink">{form.name}</p>
                 <p>{form.address}</p>
                 <p>
                   {form.city}
@@ -264,7 +264,7 @@ export default function CheckoutPage() {
         </div>
 
         <aside className="h-fit border border-gold/20 bg-ivory/40 p-6">
-          <h2 className="font-display text-2xl text-burgundy">Order summary</h2>
+          <h2 className="font-display text-2xl text-ink">Order summary</h2>
           <ul className="mt-5 space-y-4">
             {items.map((item) => (
               <li key={item.key} className="flex gap-3">
@@ -272,7 +272,7 @@ export default function CheckoutPage() {
                   <Image src={item.image} alt={item.name} fill className="object-cover" />
                 </div>
                 <div className="flex-1 text-sm">
-                  <p className="text-burgundy">{item.name}</p>
+                  <p className="text-ink">{item.name}</p>
                   <p className="text-xs text-ink/50">
                     {item.variantLabel} · ×{item.quantity}
                   </p>
@@ -294,7 +294,7 @@ export default function CheckoutPage() {
               <span className="text-ink/55">Shipping</span>
               <span>{totals.shipping === 0 ? "Complimentary" : formatINR(totals.shipping)}</span>
             </div>
-            <div className="flex justify-between pt-2 font-display text-2xl text-burgundy">
+            <div className="flex justify-between pt-2 font-display text-2xl text-ink">
               <span>Total</span>
               <span>{formatINR(totals.total)}</span>
             </div>

@@ -30,13 +30,13 @@ export default function OrderConfirmationPage() {
   return (
     <div className="mx-auto max-w-2xl px-4 py-20 text-center md:px-8">
       <p className="text-[11px] uppercase tracking-[0.24em] text-gold-deep">Thank you</p>
-      <h1 className="mt-3 font-display text-5xl text-burgundy">Order confirmed</h1>
+      <h1 className="mt-3 font-display text-5xl text-ink">Order confirmed</h1>
       <p className="mt-4 text-ink/65">
         Your San Marco pieces are being prepared with care.
       </p>
       <div className="mx-auto mt-10 border border-gold/25 bg-ivory/50 px-6 py-8 text-left">
-        <p className="text-[11px] uppercase tracking-[0.18em] text-burgundy/60">Order ID</p>
-        <p className="font-display text-3xl text-burgundy">{params.id}</p>
+        <p className="text-[11px] uppercase tracking-[0.18em] text-ink/60">Order ID</p>
+        <p className="font-display text-3xl text-ink">{params.id}</p>
         {order && (
           <div className="mt-4 space-y-1 text-sm text-ink/65">
             <p>
@@ -51,7 +51,7 @@ export default function OrderConfirmationPage() {
         )}
         <p className="mt-6 text-sm text-ink/55">
           A concierge confirmation will be shared on WhatsApp/email shortly. Questions?{" "}
-          <a className="text-burgundy underline" href={`https://wa.me/${BRAND.whatsapp}`}>
+          <a className="text-ink underline" href={`https://wa.me/${BRAND.whatsapp}`}>
             Message us
           </a>
           .

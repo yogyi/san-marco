@@ -18,7 +18,7 @@ export default function GiftingPage() {
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-burgundy-deep/55" />
+        <div className="absolute inset-0 bg-ink/50" />
         <div className="relative z-10 mx-auto flex min-h-[60vh] max-w-7xl items-end px-4 pb-14 md:px-8">
           <div className="max-w-xl text-cream">
             <p className="text-[11px] uppercase tracking-[0.24em] text-gold">Gifting Atelier</p>
@@ -48,7 +48,7 @@ export default function GiftingPage() {
             },
           ].map((item) => (
             <div key={item.title} className="border border-gold/20 bg-ivory/40 p-6">
-              <h2 className="font-display text-2xl text-burgundy">{item.title}</h2>
+              <h2 className="font-display text-2xl text-ink">{item.title}</h2>
               <p className="mt-3 text-sm text-ink/65">{item.copy}</p>
             </div>
           ))}

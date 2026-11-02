@@ -10,21 +10,23 @@ export default {
   theme: {
     extend: {
       colors: {
-        cream: "#f7f1e8",
-        ivory: "#fbf7f0",
+        cream: "#faf7f2",
+        ivory: "#ffffff",
+        sand: "#f3ebe0",
         burgundy: {
-          DEFAULT: "#6b1f2a",
-          deep: "#4a121c",
+          DEFAULT: "#7a2e38",
+          deep: "#5c1f28",
         },
         gold: {
-          DEFAULT: "#c6a15b",
-          soft: "#d8b978",
-          deep: "#9a7640",
+          DEFAULT: "#b8954f",
+          soft: "#d4bc7d",
+          deep: "#8f7040",
         },
-        ink: "#2a1c1f",
+        ink: "#2c2426",
+        muted: "#6e6366",
         border: "hsl(var(--border) / 0.2)",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        background: "#ffffff",
+        foreground: "#2c2426",
       },
       fontFamily: {
         display: ["var(--font-display)", "Georgia", "serif"],
@@ -35,14 +37,9 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
-      keyframes: {
-        "fade-up": {
-          from: { opacity: "0", transform: "translateY(12px)" },
-          to: { opacity: "1", transform: "translateY(0)" },
-        },
-      },
-      animation: {
-        "fade-up": "fade-up 0.7s ease forwards",
+      boxShadow: {
+        soft: "0 18px 50px -28px rgba(44, 36, 38, 0.28)",
+        glow: "0 0 0 1px rgba(184, 149, 79, 0.25)",
       },
     },
   },
