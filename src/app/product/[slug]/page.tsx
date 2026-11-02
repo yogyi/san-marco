@@ -33,19 +33,31 @@ export default async function ProductPage({
   const related = relatedProducts(product);
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10 md:px-8 md:py-14">
-      <nav className="mb-8 text-xs uppercase tracking-[0.14em] text-ink/45">
+    <div className="mx-auto max-w-7xl px-4 py-8 md:px-8 md:py-14">
+      <nav className="mb-6 text-[11px] font-semibold uppercase tracking-[0.16em] text-ink/55">
         <Link href="/shop" className="hover:text-burgundy">
           Shop
         </Link>
-        <span className="mx-2">/</span>
+        <span className="mx-2 text-ink/30">/</span>
+        <Link
+          href={`/shop?collection=${product.collection.toLowerCase()}`}
+          className="hover:text-burgundy"
+        >
+          {product.collection}
+        </Link>
+        <span className="mx-2 text-ink/30">/</span>
         <span className="text-burgundy">{product.name}</span>
       </nav>
 
       <ProductDetail product={product} />
 
-      <section className="mt-20">
-        <h2 className="font-display text-3xl text-burgundy">You may also love</h2>
+      <section className="mt-20 border-t border-gold/20 pt-14">
+        <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-gold-deep">
+          Keep exploring
+        </p>
+        <h2 className="mt-2 font-display text-3xl font-bold text-burgundy md:text-4xl">
+          You may also love
+        </h2>
         <div className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
           {related.map((p, i) => (
             <ProductCard key={p.id} product={p} index={i} />
