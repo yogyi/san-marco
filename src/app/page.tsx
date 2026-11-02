@@ -14,9 +14,9 @@ export default function HomePage() {
 
   return (
     <>
-      <Hero />
-
       <CircleCategories />
+
+      <Hero />
 
       <ProductRail title="Most Loved" products={mostLoved} />
 
