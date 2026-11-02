@@ -94,7 +94,7 @@ export function SiteHeader() {
             </nav>
             <Link
               href="/shop"
-              className="hidden p-2 text-burgundy/70 transition hover:text-burgundy sm:inline-flex"
+              className="inline-flex p-2 text-burgundy/70 transition hover:text-burgundy"
               aria-label="Search shop"
             >
               <Search className="h-5 w-5" />
