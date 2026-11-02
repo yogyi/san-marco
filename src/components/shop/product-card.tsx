@@ -59,14 +59,14 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
       </div>
       <div className="mt-3 space-y-1 text-center md:text-left">
         <Link href={`/product/${product.slug}`}>
-          <h3 className="text-[15px] font-medium leading-snug text-ink hover:text-burgundy">
+          <h3 className="text-[15px] font-semibold leading-snug text-ink hover:text-burgundy">
             {product.name}
           </h3>
         </Link>
-        <p className="text-xs text-muted">{product.tagline}</p>
+        <p className="text-xs font-medium text-muted">{product.tagline}</p>
         <div className="flex items-center justify-center gap-2 pt-1 md:justify-start">
-          <span className="text-sm font-semibold text-ink">{formatINR(starter.price)}</span>
-          <span className="text-xs text-muted line-through">{formatINR(starter.mrp)}</span>
+          <span className="text-sm font-bold text-ink">{formatINR(starter.price)}</span>
+          <span className="text-xs font-medium text-muted line-through">{formatINR(starter.mrp)}</span>
         </div>
       </div>
     </motion.article>

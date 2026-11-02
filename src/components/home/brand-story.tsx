@@ -28,16 +28,16 @@ export function BrandStory() {
       </div>
 
       <div className="md:pl-2">
-        <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-gold-deep">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.32em] text-gold-deep">
           The Story of San Marco
         </p>
-        <h2 className="mt-4 font-display text-5xl leading-[0.95] text-burgundy md:text-6xl">
+        <h2 className="mt-4 font-display text-5xl font-bold leading-[0.95] text-burgundy md:text-6xl">
           Hi there!
         </h2>
-        <span aria-hidden className="mt-4 block font-display text-lg text-gold/80">
+        <span aria-hidden className="mt-4 block font-display text-lg font-semibold text-gold/80">
           ✦
         </span>
-        <div className="mt-6 space-y-4 text-[15px] leading-relaxed text-muted">
+        <div className="mt-6 space-y-4 text-[15px] font-medium leading-relaxed text-muted">
           <p>
             San Marco was created for bedrooms that deserve more than ordinary bedding — soft loft,
             thoughtful colour, and packaging that already feels like a gift.

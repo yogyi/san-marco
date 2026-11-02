@@ -60,7 +60,7 @@ export function CircleCategories() {
                 priority
               />
             </span>
-            <span className="mt-1.5 text-center text-[10px] font-medium leading-tight text-ink/80">
+            <span className="mt-1.5 text-center text-[10px] font-semibold leading-tight text-ink">
               {cat.label}
             </span>
           </Link>

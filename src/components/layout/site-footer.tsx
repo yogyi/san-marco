@@ -30,7 +30,7 @@ export function SiteFooter() {
             height={72}
             className="h-16 w-16 rounded-full object-cover ring-1 ring-gold/50"
           />
-          <p className="font-display text-4xl text-cream md:text-5xl">San Marco</p>
+          <p className="font-display text-4xl font-bold text-cream md:text-5xl">San Marco</p>
           <div className="flex items-center gap-3">
             <span className="h-px w-10 bg-gold/70" />
             <span className="text-[10px] uppercase tracking-[0.32em] text-gold-soft">
@@ -38,7 +38,7 @@ export function SiteFooter() {
             </span>
             <span className="h-px w-10 bg-gold/70" />
           </div>
-          <p className="max-w-xl text-sm leading-relaxed text-cream/70 md:text-[15px]">
+          <p className="max-w-xl text-sm font-medium leading-relaxed text-cream/85 md:text-[15px]">
             Soft loft, thoughtful colour, gift-ready finish — everyday luxury, Made in India.
           </p>
           <div className="mt-2 flex flex-wrap items-center justify-center gap-3">
@@ -65,7 +65,7 @@ export function SiteFooter() {
           <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-gold-soft">
             Contact
           </p>
-          <div className="mt-5 space-y-3 text-sm leading-relaxed text-cream/70">
+          <div className="mt-5 space-y-3 text-sm font-medium leading-relaxed text-cream/85">
             <p>
               <a href={`tel:${BRAND.phone.replace(/\s/g, "")}`} className="transition hover:text-gold-soft">
                 {BRAND.phone}
@@ -88,7 +88,7 @@ export function SiteFooter() {
           <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-gold-soft">
             Shop
           </p>
-          <ul className="mt-5 space-y-2.5 text-sm text-cream/70">
+          <ul className="mt-5 space-y-2.5 text-sm font-medium text-cream/85">
             {shopLinks.map((l) => (
               <li key={l.href}>
                 <Link href={l.href} className="transition hover:text-gold-soft">
@@ -103,7 +103,7 @@ export function SiteFooter() {
           <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-gold-soft">
             Help
           </p>
-          <ul className="mt-5 space-y-2.5 text-sm text-cream/70">
+          <ul className="mt-5 space-y-2.5 text-sm font-medium text-cream/85">
             {helpLinks.map((l) => (
               <li key={l.href}>
                 <Link href={l.href} className="transition hover:text-gold-soft">
@@ -118,7 +118,7 @@ export function SiteFooter() {
           <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-gold-soft">
             At Home
           </p>
-          <p className="mt-5 text-sm leading-relaxed text-cream/70">
+          <p className="mt-5 text-sm font-medium leading-relaxed text-cream/85">
             Thirteen designs across Venice, Alberta and Tiffany — reversible comfort with a reusable
             gift bag in every order.
           </p>

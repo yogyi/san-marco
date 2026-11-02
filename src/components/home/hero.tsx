@@ -35,26 +35,26 @@ export function Hero() {
           transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
           className="absolute left-5 top-[20%] w-[min(70%,16rem)]"
         >
-          <p className="text-[10px] font-medium uppercase tracking-[0.36em] text-gold-deep">
+          <p className="text-[10px] font-bold uppercase tracking-[0.36em] text-gold-deep">
             Alberta Collection
           </p>
 
-          <p className="mt-3.5 font-display text-[2.85rem] leading-[0.9] tracking-tight text-burgundy">
+          <p className="mt-3.5 font-display text-[2.85rem] font-bold leading-[0.9] tracking-tight text-burgundy">
             San Marco
           </p>
 
           <div className="mt-4 flex items-center gap-3">
             <span className="h-px w-9 bg-gold" />
-            <span className="text-[10px] uppercase tracking-[0.28em] text-ink/50">
+            <span className="text-[10px] font-semibold uppercase tracking-[0.28em] text-ink/70">
               Soft florals
             </span>
           </div>
 
-          <h1 className="mt-4 font-display text-[1.4rem] leading-[1.3] text-ink">
+          <h1 className="mt-4 font-display text-[1.4rem] font-semibold leading-[1.3] text-ink">
             Quiet nights in bloom
           </h1>
 
-          <p className="mt-3.5 max-w-[14rem] text-[13px] leading-[1.7] text-ink/65">
+          <p className="mt-3.5 max-w-[14rem] text-[13px] font-medium leading-[1.7] text-ink/80">
             Quilted loft · Gift-ready
             <br />
             Made in India
@@ -76,19 +76,19 @@ export function Hero() {
           transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
           className="max-w-xl text-ink"
         >
-          <p className="font-display text-6xl leading-[0.92] tracking-tight md:text-8xl">
+          <p className="font-display text-6xl font-bold leading-[0.92] tracking-tight md:text-8xl">
             San Marco
           </p>
           <div className="my-5 flex items-center gap-3">
             <span className="h-px w-12 bg-gold" />
-            <span className="text-[11px] uppercase tracking-[0.28em] text-gold-deep">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.28em] text-gold-deep">
               Premium Bedding & Comforters
             </span>
           </div>
-          <h1 className="font-display text-2xl leading-snug text-ink/90 md:text-3xl">
+          <h1 className="font-display text-2xl font-semibold leading-snug text-ink md:text-3xl">
             Wrap yourself in everyday luxury
           </h1>
-          <p className="mt-4 max-w-md text-sm leading-relaxed text-ink/65 md:text-[15px]">
+          <p className="mt-4 max-w-md text-sm font-medium leading-relaxed text-ink/80 md:text-[15px]">
             Soft microfibre loft, reversible designs, and gift-ready bags — the Festive Comfort
             Collection, Made in India.
           </p>

@@ -8,13 +8,13 @@ import { WhatsAppFloat } from "@/components/layout/whatsapp-float";
 
 const display = Cormorant_Garamond({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["500", "600", "700"],
   variable: "--font-display",
 });
 
 const sans = Manrope({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["500", "600", "700", "800"],
   variable: "--font-sans",
 });
 
@@ -34,7 +34,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${display.variable} ${sans.variable} font-sans`}>
+      <body className={`${display.variable} ${sans.variable} font-sans font-medium`}>
         <SiteHeader />
         <main>{children}</main>
         <SiteFooter />

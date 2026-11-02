@@ -61,9 +61,9 @@ export function SiteHeader() {
             >
               <Menu className="h-5 w-5" />
             </button>
-            <nav className="hidden items-center gap-7 text-[11px] uppercase tracking-[0.18em] text-burgundy/75 md:flex">
+            <nav className="hidden items-center gap-7 text-[11px] font-semibold uppercase tracking-[0.18em] text-burgundy md:flex">
               {leftLinks.map((l) => (
-                <Link key={l.href} href={l.href} className="transition hover:text-burgundy">
+                <Link key={l.href} href={l.href} className="transition hover:text-burgundy-deep">
                   {l.label}
                 </Link>
               ))}
@@ -88,9 +88,9 @@ export function SiteHeader() {
 
           {/* Right */}
           <div className="justify-self-end flex items-center gap-1 md:gap-2">
-            <nav className="mr-2 hidden items-center gap-7 text-[11px] uppercase tracking-[0.18em] text-burgundy/75 md:flex">
+            <nav className="mr-2 hidden items-center gap-7 text-[11px] font-semibold uppercase tracking-[0.18em] text-burgundy md:flex">
               {rightLinks.map((l) => (
-                <Link key={l.href} href={l.href} className="transition hover:text-burgundy">
+                <Link key={l.href} href={l.href} className="transition hover:text-burgundy-deep">
                   {l.label}
                 </Link>
               ))}

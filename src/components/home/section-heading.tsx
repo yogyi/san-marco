@@ -24,7 +24,7 @@ export function SectionHeading({
       )}
     >
       {eyebrow ? (
-        <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-gold-deep">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.32em] text-gold-deep">
           {eyebrow}
         </p>
       ) : null}
@@ -39,7 +39,7 @@ export function SectionHeading({
           aria-hidden
           className="hidden h-px flex-1 bg-gradient-to-r from-transparent via-gold/70 to-gold/40 sm:block"
         />
-        <h2 className="shrink-0 font-display text-4xl font-medium tracking-[-0.01em] text-burgundy md:text-5xl lg:text-[3.35rem]">
+        <h2 className="shrink-0 font-display text-4xl font-bold tracking-[-0.01em] text-burgundy md:text-5xl lg:text-[3.35rem]">
           {title}
         </h2>
         <span
@@ -56,7 +56,7 @@ export function SectionHeading({
       </span>
 
       {subtitle ? (
-        <p className="max-w-md text-sm leading-relaxed tracking-wide text-muted md:text-[15px]">
+        <p className="max-w-md text-sm font-medium leading-relaxed tracking-wide text-muted md:text-[15px]">
           {subtitle}
         </p>
       ) : null}

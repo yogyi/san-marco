@@ -14,7 +14,7 @@ function MarqueeTrack() {
     <div className="flex shrink-0 items-center gap-10 pr-10">
       {items.map((item) => (
         <span key={item} className="flex items-center gap-10">
-          <span className="whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.28em] text-cream/90">
+          <span className="whitespace-nowrap text-[11px] font-semibold uppercase tracking-[0.28em] text-cream">
             {item}
           </span>
           <span aria-hidden className="font-display text-sm text-gold-soft/80">
