@@ -14,7 +14,7 @@ export function Hero() {
         alt="Alberta floral comforter styled in a calm bedroom"
         fill
         priority
-        className="object-cover object-[68%_22%] md:hidden"
+        className="object-cover object-[72%_30%] md:hidden"
         sizes="100vw"
       />
       {/* Desktop hero unchanged */}
@@ -33,7 +33,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
-          className="absolute left-5 top-[34%] w-[min(68%,17rem)] -translate-y-1/2"
+          className="absolute left-5 top-[44%] w-[min(68%,16.5rem)] -translate-y-1/2"
         >
           <p className="text-[10px] font-medium uppercase tracking-[0.36em] text-gold-deep">
             Alberta Collection
