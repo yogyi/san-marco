@@ -8,6 +8,7 @@ import { useCart, cartTotals } from "@/store/cart";
 import { cn } from "@/lib/utils";
 
 const leftLinks = [
+  { href: "/shop", label: "Shop All" },
   { href: "/shop?collection=tiffany", label: "Tiffany" },
   { href: "/shop?collection=venice", label: "Venice" },
   { href: "/shop?collection=alberta", label: "Alberta" },
@@ -19,11 +20,7 @@ const rightLinks = [
   { href: "/about", label: "Our Story" },
 ];
 
-const mobileLinks = [
-  { href: "/shop", label: "Shop All" },
-  ...leftLinks,
-  ...rightLinks,
-];
+const mobileLinks = [...leftLinks, ...rightLinks];
 
 export function SiteHeader() {
   const { items, openCart } = useCart();
