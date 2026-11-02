@@ -7,14 +7,14 @@ import { Button } from "@/components/ui/button";
 
 export function Hero() {
   return (
-    <section className="relative min-h-[calc(100vh-7.5rem)] w-full overflow-hidden md:min-h-[calc(100vh-8.5rem)]">
+    <section className="relative min-h-[78svh] w-full overflow-hidden md:min-h-[calc(100vh-8.5rem)]">
       {/* Mobile hero image only */}
       <Image
         src="/hero/hero-mobile.jpg"
         alt="Alberta floral comforter styled in a calm bedroom"
         fill
         priority
-        className="object-cover object-[center_30%] md:hidden"
+        className="object-cover object-[center_28%] md:hidden"
         sizes="100vw"
       />
       {/* Desktop hero unchanged */}
@@ -28,31 +28,30 @@ export function Hero() {
       />
 
       {/* Mobile copy — Alberta floral mood */}
-      <div className="relative z-10 mx-auto flex min-h-[calc(100vh-7.5rem)] max-w-7xl flex-col justify-end px-5 pb-14 pt-20 md:hidden">
+      <div className="relative z-10 mx-auto flex min-h-[78svh] max-w-7xl flex-col justify-end px-4 pb-8 pt-10 md:hidden">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="max-w-md rounded-sm bg-cream/80 px-5 py-6 backdrop-blur-[2px]"
+          className="max-w-md bg-cream/85 px-4 py-5 shadow-[0_12px_40px_-24px_rgba(74,18,28,0.45)] backdrop-blur-[2px]"
         >
           <p className="text-[10px] font-medium uppercase tracking-[0.32em] text-gold-deep">
             Alberta Collection
           </p>
-          <p className="mt-2 font-display text-5xl leading-[0.92] tracking-tight text-burgundy">
+          <p className="mt-1.5 font-display text-4xl leading-[0.92] tracking-tight text-burgundy">
             San Marco
           </p>
-          <h1 className="mt-3 font-display text-2xl leading-snug text-ink">
+          <h1 className="mt-2 font-display text-xl leading-snug text-ink">
             Soft florals for quiet nights
           </h1>
-          <p className="mt-3 text-sm leading-relaxed text-ink/70">
-            Quilted microfibre loft in muted bloom — serene colour, gift-ready finish, Made in
-            India.
+          <p className="mt-2 text-[13px] leading-relaxed text-ink/70">
+            Quilted microfibre loft in muted bloom — serene colour, gift-ready, Made in India.
           </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Button asChild size="lg" variant="gold">
+          <div className="mt-4 flex flex-wrap gap-2.5">
+            <Button asChild size="default" variant="gold">
               <Link href="/shop?collection=alberta">Shop Alberta</Link>
             </Button>
-            <Button asChild size="lg" variant="outline">
+            <Button asChild size="default" variant="outline">
               <Link href="/shop">Shop All</Link>
             </Button>
           </div>
