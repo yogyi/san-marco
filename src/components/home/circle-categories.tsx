@@ -41,22 +41,22 @@ const categories = [
 
 export function CircleCategories() {
   return (
-    <section className="border-b border-black/5 bg-white px-3 py-5 md:px-6 md:py-8 lg:px-10 lg:py-9">
-      {/* Mobile: compact scroll row */}
-      <div className="flex items-start justify-start gap-4 overflow-x-auto pb-1 md:hidden">
+    <section className="border-b border-black/5 bg-white">
+      {/* Mobile: compact scroll */}
+      <div className="flex gap-3.5 overflow-x-auto px-3 py-4 md:hidden">
         {categories.map((cat) => (
           <Link
             key={cat.label}
             href={cat.href}
-            className="group flex w-[68px] shrink-0 flex-col items-center"
+            className="group flex w-[66px] shrink-0 flex-col items-center"
           >
-            <span className="relative block h-14 w-14 overflow-hidden rounded-full bg-[#f5f5f5] shadow-[0_3px_10px_rgba(0,0,0,0.08)] ring-1 ring-black/5">
+            <span className="relative block h-[58px] w-[58px] overflow-hidden rounded-full bg-[#f3f3f3] shadow-sm ring-1 ring-black/5">
               <Image
                 src={cat.image}
                 alt={cat.label}
                 fill
                 className="object-cover"
-                sizes="56px"
+                sizes="58px"
                 priority
               />
             </span>
@@ -67,29 +67,31 @@ export function CircleCategories() {
         ))}
       </div>
 
-      {/* Desktop / tablet: full-width equal columns, larger circles */}
-      <div className="mx-auto hidden w-full max-w-[1400px] grid-cols-7 gap-3 md:grid lg:gap-5">
-        {categories.map((cat) => (
-          <Link
-            key={cat.label}
-            href={cat.href}
-            className="group flex flex-col items-center"
-          >
-            <span className="relative mx-auto block aspect-square w-full max-w-[140px] overflow-hidden rounded-full bg-[#f5f5f5] shadow-[0_6px_18px_rgba(0,0,0,0.10)] ring-1 ring-black/5 transition duration-300 group-hover:shadow-[0_10px_24px_rgba(0,0,0,0.14)] group-hover:ring-burgundy/20 lg:max-w-[160px]">
-              <Image
-                src={cat.image}
-                alt={cat.label}
-                fill
-                className="object-cover transition duration-500 group-hover:scale-105"
-                sizes="160px"
-                priority
-              />
-            </span>
-            <span className="mt-3 text-center text-[13px] font-medium tracking-[0.03em] text-ink transition group-hover:text-burgundy lg:text-[14px]">
-              {cat.label}
-            </span>
-          </Link>
-        ))}
+      {/* Desktop: edge-to-edge equal columns, circles fill most of each column */}
+      <div className="mx-auto hidden w-full px-4 py-7 md:block md:px-6 lg:px-8 xl:px-10">
+        <div className="grid w-full grid-cols-7 gap-x-3 lg:gap-x-5 xl:gap-x-6">
+          {categories.map((cat) => (
+            <Link
+              key={cat.label}
+              href={cat.href}
+              className="group flex w-full flex-col items-center"
+            >
+              <span className="relative block aspect-square w-full overflow-hidden rounded-full bg-[#f3f3f3] shadow-[0_8px_22px_rgba(0,0,0,0.10)] ring-1 ring-black/5 transition duration-300 group-hover:shadow-[0_12px_28px_rgba(0,0,0,0.14)] group-hover:ring-burgundy/25">
+                <Image
+                  src={cat.image}
+                  alt={cat.label}
+                  fill
+                  className="object-cover transition duration-500 group-hover:scale-105"
+                  sizes="(min-width:1280px) 180px, (min-width:768px) 14vw, 58px"
+                  priority
+                />
+              </span>
+              <span className="mt-3 text-center text-[12px] font-medium tracking-[0.04em] text-ink transition group-hover:text-burgundy lg:text-[14px]">
+                {cat.label}
+              </span>
+            </Link>
+          ))}
+        </div>
       </div>
     </section>
   );
