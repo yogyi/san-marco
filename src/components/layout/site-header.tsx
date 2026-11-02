@@ -43,18 +43,18 @@ export function SiteHeader() {
             : "bg-cream/90 backdrop-blur-sm"
         )}
       >
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-2.5 md:px-8">
-          <button
-            className="p-2 text-burgundy md:hidden"
-            aria-label="Open menu"
-            onClick={() => setMobileOpen(true)}
-          >
-            <Menu className="h-5 w-5" />
-          </button>
+        <div className="relative mx-auto grid max-w-[1400px] grid-cols-3 items-center px-4 py-2.5 md:px-8">
+          <div className="justify-self-start">
+            <button
+              className="p-2 text-burgundy md:hidden"
+              aria-label="Open menu"
+              onClick={() => setMobileOpen(true)}
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+          </div>
 
-          <div className="hidden w-20 md:block" aria-hidden />
-
-          <Link href="/" className="absolute left-1/2 flex -translate-x-1/2 items-center gap-2.5">
+          <Link href="/" className="justify-self-center flex items-center gap-2.5">
             <Image
               src="/brand/san-marco-logo.jpg"
               alt="San Marco"
@@ -73,7 +73,7 @@ export function SiteHeader() {
             </span>
           </Link>
 
-          <div className="ml-auto flex items-center gap-1">
+          <div className="justify-self-end flex items-center gap-1">
             <Link
               href="/shop"
               className="hidden p-2 text-burgundy/70 transition hover:text-burgundy sm:inline-flex"
