@@ -14,7 +14,7 @@ export function Hero() {
         alt="Alberta floral comforter styled in a calm bedroom"
         fill
         priority
-        className="object-cover object-[78%_8%] md:hidden"
+        className="object-cover object-[70%_0%] md:hidden"
         sizes="100vw"
       />
       {/* Desktop hero unchanged */}
@@ -39,33 +39,33 @@ export function Hero() {
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
-          className="absolute left-5 top-[38%] w-[min(68%,15.5rem)] -translate-y-1/2"
+          className="absolute left-5 top-[36%] w-[min(66%,15rem)] -translate-y-1/2"
         >
           <p className="text-[10px] font-medium uppercase tracking-[0.36em] text-gold-deep">
             Alberta Collection
           </p>
 
-          <p className="mt-3 font-display text-[2.75rem] leading-[0.9] tracking-tight text-burgundy">
+          <p className="mt-3 font-display text-[2.7rem] leading-[0.9] tracking-tight text-burgundy">
             San Marco
           </p>
 
-          <div className="mt-3.5 flex items-center gap-3">
+          <div className="mt-3 flex items-center gap-3">
             <span className="h-px w-9 bg-gold" />
             <span className="text-[10px] uppercase tracking-[0.28em] text-ink/55">
               Soft florals
             </span>
           </div>
 
-          <h1 className="mt-3.5 font-display text-[1.35rem] leading-[1.25] text-ink">
+          <h1 className="mt-3 font-display text-[1.3rem] leading-[1.25] text-ink">
             Quiet nights in bloom
           </h1>
 
-          <p className="mt-3 max-w-[13.5rem] text-[12.5px] leading-[1.65] text-ink/70">
-            Quilted loft · Gift-ready · Made in India
+          <p className="mt-2.5 max-w-[13rem] text-[12.5px] leading-[1.6] text-ink/70">
+            Quilted loft · Made in India
           </p>
 
           <div className="mt-5">
-            <Button asChild size="lg" variant="gold" className="min-w-[10rem] tracking-[0.12em]">
+            <Button asChild size="default" variant="gold" className="min-w-[9.5rem] tracking-[0.12em]">
               <Link href="/shop">Shop Collection</Link>
             </Button>
           </div>
