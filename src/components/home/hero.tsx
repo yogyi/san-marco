@@ -7,14 +7,14 @@ import { Button } from "@/components/ui/button";
 
 export function Hero() {
   return (
-    <section className="relative min-h-[78svh] w-full overflow-hidden md:min-h-[calc(100vh-8.5rem)]">
-      {/* Mobile hero image only */}
+    <section className="relative min-h-[82svh] w-full overflow-hidden md:min-h-[calc(100vh-8.5rem)]">
+      {/* Mobile hero image — keep open wall on the left for copy */}
       <Image
         src="/hero/hero-mobile.jpg"
         alt="Alberta floral comforter styled in a calm bedroom"
         fill
         priority
-        className="object-cover object-[center_28%] md:hidden"
+        className="object-cover object-[68%_22%] md:hidden"
         sizes="100vw"
       />
       {/* Desktop hero unchanged */}
@@ -27,43 +27,44 @@ export function Hero() {
         sizes="100vw"
       />
 
-      {/* Mobile copy — sits in open wall space, no panel */}
-      <div className="relative z-10 mx-auto flex min-h-[78svh] max-w-7xl flex-col justify-start px-5 pt-40 md:hidden">
+      {/* Mobile copy — airy, sits in clear wall above the lamp */}
+      <div className="absolute inset-0 z-10 md:hidden">
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="max-w-[17.5rem]"
+          transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
+          className="absolute left-5 top-[11%] w-[min(68%,17rem)]"
         >
-          <p className="text-[10px] font-medium uppercase tracking-[0.34em] text-gold-deep drop-shadow-[0_1px_8px_rgba(255,255,255,0.55)]">
+          <p className="text-[10px] font-medium uppercase tracking-[0.36em] text-gold-deep">
             Alberta Collection
           </p>
-          <p className="mt-2 font-display text-[2.65rem] leading-[0.9] tracking-tight text-burgundy drop-shadow-[0_2px_14px_rgba(255,248,240,0.7)]">
+
+          <p className="mt-4 font-display text-[3rem] leading-[0.88] tracking-tight text-burgundy">
             San Marco
           </p>
-          <div className="my-3 flex items-center gap-2.5">
-            <span className="h-px w-8 bg-gold" />
-            <span className="text-[9px] uppercase tracking-[0.26em] text-ink/55">
+
+          <div className="mt-5 flex items-center gap-3">
+            <span className="h-px w-10 bg-gold" />
+            <span className="text-[10px] uppercase tracking-[0.28em] text-ink/50">
               Soft florals
             </span>
           </div>
-          <h1 className="font-display text-[1.35rem] leading-snug text-ink drop-shadow-[0_1px_10px_rgba(255,248,240,0.65)]">
-            Quiet nights in bloom
+
+          <h1 className="mt-5 font-display text-[1.45rem] leading-[1.25] text-ink">
+            Quiet nights
+            <br />
+            in bloom
           </h1>
-          <p className="mt-2.5 max-w-[15.5rem] text-[12.5px] leading-relaxed text-ink/70 drop-shadow-[0_1px_8px_rgba(255,248,240,0.6)]">
-            Quilted microfibre loft — serene colour, gift-ready, Made in India.
+
+          <p className="mt-4 max-w-[14.5rem] text-[13px] leading-[1.65] text-ink/65">
+            Quilted microfibre loft.
+            <br />
+            Gift-ready. Made in India.
           </p>
-          <div className="mt-5 flex flex-wrap gap-2.5">
-            <Button asChild size="default" variant="gold">
+
+          <div className="mt-7">
+            <Button asChild size="lg" variant="gold" className="min-w-[9.5rem] tracking-[0.12em]">
               <Link href="/shop?collection=alberta">Shop Alberta</Link>
-            </Button>
-            <Button
-              asChild
-              size="default"
-              variant="outline"
-              className="border-burgundy/35 bg-transparent text-burgundy hover:bg-burgundy hover:text-cream"
-            >
-              <Link href="/shop">Shop All</Link>
             </Button>
           </div>
         </motion.div>
