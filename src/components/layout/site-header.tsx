@@ -9,8 +9,9 @@ import { cn } from "@/lib/utils";
 
 const links = [
   { href: "/shop", label: "Shop All" },
-  { href: "/shop?category=floral", label: "Florals" },
-  { href: "/shop?category=solid", label: "Solids" },
+  { href: "/shop?collection=venice", label: "Venice" },
+  { href: "/shop?collection=alberta", label: "Alberta" },
+  { href: "/shop?collection=tiffany", label: "Tiffany" },
   { href: "/collections/festive", label: "Festive Edit" },
   { href: "/gifting", label: "Gifting" },
   { href: "/about", label: "Our Story" },

@@ -2,26 +2,25 @@
 
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { COLLECTIONS } from "@/lib/collections";
 
 const categories = [
-  { id: undefined, label: "All" },
-  { id: "striped", label: "Striped" },
-  { id: "floral", label: "Floral" },
-  { id: "solid", label: "Solid" },
-] as const;
+  { id: undefined as string | undefined, label: "All" },
+  ...COLLECTIONS.map((c) => ({ id: c.id, label: c.name })),
+];
 
 export function ShopFilters({
-  activeCategory,
+  activeCollection,
   activeSort,
   count,
 }: {
-  activeCategory?: string;
+  activeCollection?: string;
   activeSort: string;
   count: number;
 }) {
-  const buildHref = (category?: string, sort?: string) => {
+  const buildHref = (collection?: string, sort?: string) => {
     const q = new URLSearchParams();
-    if (category) q.set("category", category);
+    if (collection) q.set("collection", collection);
     if (sort && sort !== "featured") q.set("sort", sort);
     const s = q.toString();
     return s ? `/shop?${s}` : "/shop";
@@ -36,7 +35,7 @@ export function ShopFilters({
             href={buildHref(c.id, activeSort)}
             className={cn(
               "px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] transition",
-              activeCategory === c.id || (!activeCategory && !c.id)
+              activeCollection === c.id || (!activeCollection && !c.id)
                 ? "bg-burgundy text-white"
                 : "border border-black/10 text-ink/70 hover:border-burgundy hover:text-burgundy"
             )}
@@ -51,7 +50,7 @@ export function ShopFilters({
           className="border border-black/10 bg-white px-3 py-2 text-xs uppercase tracking-wider text-ink outline-none"
           value={activeSort}
           onChange={(e) => {
-            window.location.href = buildHref(activeCategory, e.target.value);
+            window.location.href = buildHref(activeCollection, e.target.value);
           }}
           aria-label="Sort products"
         >

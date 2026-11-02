@@ -24,7 +24,7 @@ export default function AboutPage() {
             </p>
             <p>
               Inspired by Venetian heritage and crafted in India, our Festive Comfort Collection
-              brings thirteen designs across striped, floral and solid edits. Each comforter uses a
+              brings thirteen designs across Venice, Alberta and Tiffany. Each comforter uses a
               premium poly-cotton shell with hollow siliconised microfibre fill for breathable,
               all-season comfort.
             </p>

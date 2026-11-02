@@ -16,7 +16,8 @@ export type Product = {
   slug: string;
   name: string;
   designCode: string;
-  collection: "Venice" | "Alberta" | "Tiffany" | "Solid";
+  /** Official collections from San Marco product sheet */
+  collection: "Venice" | "Alberta" | "Tiffany";
   category: "striped" | "floral" | "solid";
   tagline: string;
   description: string;
@@ -120,7 +121,7 @@ export const products: Product[] = [
     slug: "tiffany-peach-rust",
     name: "Tiffany Peach & Rust",
     designCode: "NEW02",
-    collection: "Tiffany",
+    collection: "Venice",
     category: "striped",
     tagline: "Warm peach and rust for intimate evenings",
     description:
@@ -263,7 +264,7 @@ export const products: Product[] = [
     slug: "sage-green",
     name: "Sage Green",
     designCode: "SD01",
-    collection: "Solid",
+    collection: "Tiffany",
     category: "solid",
     tagline: "Two-tone sage for calm, curated spaces",
     description:
@@ -283,7 +284,7 @@ export const products: Product[] = [
     slug: "mist-blue",
     name: "Mist Blue",
     designCode: "SD02",
-    collection: "Solid",
+    collection: "Tiffany",
     category: "solid",
     tagline: "Cool mist blue with a deeper reverse",
     description:
@@ -302,7 +303,7 @@ export const products: Product[] = [
     slug: "latte-beige",
     name: "Latte Beige",
     designCode: "SD03",
-    collection: "Solid",
+    collection: "Tiffany",
     category: "solid",
     tagline: "Warm latte neutrals for quiet luxury",
     description:
@@ -322,7 +323,7 @@ export const products: Product[] = [
     slug: "blush-peach",
     name: "Blush Peach",
     designCode: "SD04",
-    collection: "Solid",
+    collection: "Tiffany",
     category: "solid",
     tagline: "Soft blush peach with rose reverse",
     description:
@@ -341,7 +342,7 @@ export const products: Product[] = [
     slug: "denim-blue",
     name: "Denim Blue",
     designCode: "SD05",
-    collection: "Solid",
+    collection: "Tiffany",
     category: "solid",
     tagline: "Deep denim blue with navy depth",
     description:

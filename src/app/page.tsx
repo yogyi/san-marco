@@ -8,22 +8,21 @@ import { products } from "@/data/products";
 
 export default function HomePage() {
   const mostLoved = products.filter((p) => p.featured || p.bestseller).slice(0, 4);
-  const florals = products.filter((p) => p.category === "floral").slice(0, 4);
-  const mustHave = products.filter((p) => p.category === "solid" || p.newArrival).slice(0, 4);
+  const alberta = products.filter((p) => p.collection === "Alberta").slice(0, 4);
+  const tiffany = products.filter((p) => p.collection === "Tiffany").slice(0, 4);
 
   return (
     <>
       <Hero />
-
 
       <ProductRail title="Most Loved" products={mostLoved} />
 
       <LookbookStrip />
 
       <ProductRail
-        title="Florals & Prints"
-        products={florals}
-        viewAllHref="/shop?category=floral"
+        title="Alberta"
+        products={alberta}
+        viewAllHref="/shop?collection=alberta"
       />
 
       <EditorialBanner
@@ -45,7 +44,11 @@ export default function HomePage() {
         reverse
       />
 
-      <ProductRail title="Must Have Pieces" products={mustHave} />
+      <ProductRail
+        title="Tiffany"
+        products={tiffany}
+        viewAllHref="/shop?collection=tiffany"
+      />
 
       <Testimonials />
       <BrandStory />

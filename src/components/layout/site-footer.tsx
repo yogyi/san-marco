@@ -20,8 +20,9 @@ export function SiteFooter() {
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-ink">Shop</p>
           <ul className="mt-4 space-y-2 text-sm text-muted">
             <li><Link href="/shop" className="hover:text-burgundy">All Bedding</Link></li>
-            <li><Link href="/shop?category=floral" className="hover:text-burgundy">Florals</Link></li>
-            <li><Link href="/shop?category=solid" className="hover:text-burgundy">Solids</Link></li>
+            <li><Link href="/shop?collection=venice" className="hover:text-burgundy">Venice</Link></li>
+            <li><Link href="/shop?collection=alberta" className="hover:text-burgundy">Alberta</Link></li>
+            <li><Link href="/shop?collection=tiffany" className="hover:text-burgundy">Tiffany</Link></li>
             <li><Link href="/collections/festive" className="hover:text-burgundy">Festive Edit</Link></li>
           </ul>
         </div>

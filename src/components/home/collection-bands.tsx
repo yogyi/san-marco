@@ -6,21 +6,21 @@ import { motion } from "framer-motion";
 
 const bands = [
   {
-    title: "Striped New Arrivals",
-    copy: "Sunshine teal and peach-rust stories for contemporary bedrooms.",
-    href: "/shop?category=striped",
+    title: "Venice",
+    copy: "Bold striped new arrivals for contemporary bedrooms.",
+    href: "/shop?collection=venice",
     image: "/products/lifestyle-set-1.jpg",
   },
   {
-    title: "Printed Florals",
-    copy: "Six garden-inspired prints — soft, gift-ready, reversible.",
-    href: "/shop?category=floral",
+    title: "Alberta",
+    copy: "Garden-inspired floral prints — soft, gift-ready, reversible.",
+    href: "/shop?collection=alberta",
     image: "/products/grey-blossom.jpg",
   },
   {
-    title: "Solid Colour Edit",
-    copy: "Five two-tone solids for quiet, curated spaces.",
-    href: "/shop?category=solid",
+    title: "Tiffany",
+    copy: "Two-tone solid colours for quiet, curated spaces.",
+    href: "/shop?collection=tiffany",
     image: "/products/sage-green.jpg",
   },
 ];
@@ -29,12 +29,12 @@ export function CollectionBands() {
   return (
     <section className="mx-auto max-w-7xl px-4 py-20 md:px-8">
       <div className="mb-10 max-w-2xl">
-        <p className="text-[11px] uppercase tracking-[0.24em] text-gold-deep">The Edit</p>
+        <p className="text-[11px] uppercase tracking-[0.24em] text-gold-deep">Collections</p>
         <h2 className="mt-2 font-display text-4xl text-burgundy md:text-5xl">
-          Thirteen designs. One signature loft.
+          Venice · Alberta · Tiffany
         </h2>
         <p className="mt-3 text-ink/65">
-          Shop by mood — striped, floral or solid — each piece arrives with a reusable gift bag.
+          Shop by collection — each piece arrives with a reusable gift bag.
         </p>
       </div>
       <div className="grid gap-5 md:grid-cols-3">
@@ -46,10 +46,7 @@ export function CollectionBands() {
             viewport={{ once: true }}
             transition={{ delay: i * 0.1, duration: 0.55 }}
           >
-            <Link
-              href={band.href}
-              className="group relative block overflow-hidden bg-sand"
-            >
+            <Link href={band.href} className="group relative block overflow-hidden bg-sand">
               <Image
                 src={band.image}
                 alt={band.title}

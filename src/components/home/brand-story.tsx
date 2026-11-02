@@ -25,7 +25,7 @@ export function BrandStory() {
           </p>
           <p>
             Inspired by Venetian heritage and crafted in India, our Festive Comfort Collection
-            brings thirteen designs across striped, floral and solid edits.
+            brings thirteen designs across Venice, Alberta and Tiffany.
           </p>
           <p>
             When you bring San Marco home, know that it was made with care — for comfort, beauty,

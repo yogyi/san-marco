@@ -36,7 +36,7 @@ export default function GiftingPage() {
           {[
             {
               title: "Festive & Bridal",
-              copy: "Curate colour stories across florals and solids for personal gifting.",
+              copy: "Curate colour stories across Venice, Alberta and Tiffany for personal gifting.",
             },
             {
               title: "Corporate Welfare",
