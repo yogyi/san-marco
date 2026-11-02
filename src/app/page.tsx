@@ -39,12 +39,13 @@ export default function HomePage() {
       />
 
       <EditorialBanner
-        eyebrow="Celebrate life, every day!"
+        eyebrow="Celebrate life, every day"
         title="Today is an occasion"
-        body="Starting your day, being around your loved ones, and resting well is an occasion. Dress your bed in San Marco — soft loft, beautiful colour, Made in India."
+        body="Starting your day, being around loved ones, and resting well is an occasion. Dress your bed in San Marco — soft loft, beautiful colour, Made in India."
         cta="Shop Bedding"
         href="/shop"
-        image="/products/tiffany-peach-rust.jpg"
+        image="/hero/hero-bedroom.jpg"
+        tone="blush"
       />
 
       <EditorialBanner
@@ -55,6 +56,7 @@ export default function HomePage() {
         href="/gifting"
         image="/products/gift-bag.jpg"
         reverse
+        tone="sage"
       />
 
       <ProductRail
