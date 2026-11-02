@@ -20,12 +20,13 @@ export function ProductDetail({ product }: { product: Product }) {
   return (
     <div className="grid gap-10 lg:grid-cols-2 lg:gap-14">
       <div>
-        <div className="relative aspect-[4/5] overflow-hidden bg-ivory">
+        <div className="overflow-hidden bg-sand">
           <Image
             src={activeImage}
             alt={product.name}
-            fill
-            className="object-cover"
+            width={1600}
+            height={1200}
+            className="h-auto w-full object-contain"
             priority
             sizes="(max-width:1024px) 100vw, 50vw"
           />
@@ -36,11 +37,18 @@ export function ProductDetail({ product }: { product: Product }) {
               key={src}
               onClick={() => setActiveImage(src)}
               className={cn(
-                "relative aspect-square overflow-hidden border",
+                "overflow-hidden border bg-sand p-1",
                 activeImage === src ? "border-burgundy" : "border-transparent opacity-80"
               )}
             >
-              <Image src={src} alt="" fill className="object-cover" sizes="120px" />
+              <Image
+                src={src}
+                alt=""
+                width={240}
+                height={180}
+                className="h-auto w-full object-contain"
+                sizes="120px"
+              />
             </button>
           ))}
         </div>

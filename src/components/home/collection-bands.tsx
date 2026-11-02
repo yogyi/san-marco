@@ -46,15 +46,19 @@ export function CollectionBands() {
             viewport={{ once: true }}
             transition={{ delay: i * 0.1, duration: 0.55 }}
           >
-            <Link href={band.href} className="group relative block aspect-[3/4] overflow-hidden">
+            <Link
+              href={band.href}
+              className="group relative block overflow-hidden bg-sand"
+            >
               <Image
                 src={band.image}
                 alt={band.title}
-                fill
-                className="object-cover transition duration-700 group-hover:scale-105"
+                width={1400}
+                height={1000}
+                className="h-auto w-full object-contain transition duration-700 group-hover:scale-[1.02]"
                 sizes="(max-width:768px) 100vw, 33vw"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-burgundy-deep/80 via-burgundy-deep/20 to-transparent" />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-burgundy-deep/85 via-burgundy-deep/25 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-6 text-cream">
                 <h3 className="font-display text-3xl">{band.title}</h3>
                 <p className="mt-2 text-sm text-cream/75">{band.copy}</p>
