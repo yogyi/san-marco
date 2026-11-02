@@ -27,31 +27,42 @@ export function Hero() {
         sizes="100vw"
       />
 
-      {/* Mobile copy — Alberta floral mood */}
-      <div className="relative z-10 mx-auto flex min-h-[78svh] max-w-7xl flex-col justify-end px-4 pb-8 pt-10 md:hidden">
+      {/* Mobile copy — sits in open wall space, no panel */}
+      <div className="relative z-10 mx-auto flex min-h-[78svh] max-w-7xl flex-col justify-start px-5 pt-8 md:hidden">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="max-w-md bg-cream/85 px-4 py-5 shadow-[0_12px_40px_-24px_rgba(74,18,28,0.45)] backdrop-blur-[2px]"
+          className="max-w-[17.5rem]"
         >
-          <p className="text-[10px] font-medium uppercase tracking-[0.32em] text-gold-deep">
+          <p className="text-[10px] font-medium uppercase tracking-[0.34em] text-gold-deep drop-shadow-[0_1px_8px_rgba(255,255,255,0.55)]">
             Alberta Collection
           </p>
-          <p className="mt-1.5 font-display text-4xl leading-[0.92] tracking-tight text-burgundy">
+          <p className="mt-2 font-display text-[2.65rem] leading-[0.9] tracking-tight text-burgundy drop-shadow-[0_2px_14px_rgba(255,248,240,0.7)]">
             San Marco
           </p>
-          <h1 className="mt-2 font-display text-xl leading-snug text-ink">
-            Soft florals for quiet nights
+          <div className="my-3 flex items-center gap-2.5">
+            <span className="h-px w-8 bg-gold" />
+            <span className="text-[9px] uppercase tracking-[0.26em] text-ink/55">
+              Soft florals
+            </span>
+          </div>
+          <h1 className="font-display text-[1.35rem] leading-snug text-ink drop-shadow-[0_1px_10px_rgba(255,248,240,0.65)]">
+            Quiet nights in bloom
           </h1>
-          <p className="mt-2 text-[13px] leading-relaxed text-ink/70">
-            Quilted microfibre loft in muted bloom — serene colour, gift-ready, Made in India.
+          <p className="mt-2.5 max-w-[15.5rem] text-[12.5px] leading-relaxed text-ink/70 drop-shadow-[0_1px_8px_rgba(255,248,240,0.6)]">
+            Quilted microfibre loft — serene colour, gift-ready, Made in India.
           </p>
-          <div className="mt-4 flex flex-wrap gap-2.5">
+          <div className="mt-5 flex flex-wrap gap-2.5">
             <Button asChild size="default" variant="gold">
               <Link href="/shop?collection=alberta">Shop Alberta</Link>
             </Button>
-            <Button asChild size="default" variant="outline">
+            <Button
+              asChild
+              size="default"
+              variant="outline"
+              className="border-burgundy/35 bg-transparent text-burgundy hover:bg-burgundy hover:text-cream"
+            >
               <Link href="/shop">Shop All</Link>
             </Button>
           </div>
