@@ -36,10 +36,33 @@ RAZORPAY_KEY_SECRET=your_key_secret_from_dashboard
 
 Checkout flow: Shipping → Payment (Razorpay or COD) → Review → Pay / Place order.
 
+## Order confirmation emails
+
+After every successful order (Razorpay or COD), the shopper receives a branded **thank-you / order confirmation** email, and the store inbox gets a new-order alert.
+
+Add **one** of these to `.env.local`:
+
+```bash
+# Resend (recommended)
+RESEND_API_KEY=re_xxxxxxxx
+EMAIL_FROM=San Marco <onboarding@resend.dev>
+
+# — or Gmail SMTP —
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=sanmarcofurnishings@gmail.com
+SMTP_PASS=your_gmail_app_password
+EMAIL_FROM=San Marco <sanmarcofurnishings@gmail.com>
+ORDER_NOTIFY_EMAIL=sanmarcofurnishings@gmail.com
+```
+
+Checkout requires the customer’s email so the thank-you message can be delivered. Without email credentials, orders still complete; the confirmation page notes that WhatsApp follow-up will be used.
+
 ## What’s included
 
 - Home, shop (filters), product detail with size variants
 - Cart drawer + 3-step checkout with live Razorpay payments
+- Thank-you purchase email + store order alert on every order
 - Festive collection, gifting, about, contact, shipping pages
 - Product imagery from the brand PDF; specs from the product sheet
 

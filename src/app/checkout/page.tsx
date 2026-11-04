@@ -35,8 +35,10 @@ export default function CheckoutPage() {
   });
 
   const validShipping = useMemo(() => {
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim());
     return (
       form.name.trim() &&
+      emailOk &&
       form.phone.trim().length >= 10 &&
       form.address.trim() &&
       form.city.trim() &&
@@ -56,12 +58,57 @@ export default function CheckoutPage() {
     );
   }
 
-  function finishOrder(meta: {
+  async function sendThankYouEmail(meta: {
+    orderId: string;
+    payment: string;
+    razorpayPaymentId?: string;
+  }) {
+    try {
+      const res = await fetch("/api/orders/confirm", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderId: meta.orderId,
+          customerName: form.name,
+          customerEmail: form.email,
+          phone: form.phone,
+          address: form.address,
+          city: form.city,
+          state: form.state,
+          pincode: form.pincode,
+          notes: form.notes,
+          payment: meta.payment,
+          razorpayPaymentId: meta.razorpayPaymentId,
+          items: items.map((item) => ({
+            name: item.name,
+            variantLabel: item.variantLabel,
+            quantity: item.quantity,
+            price: item.price,
+          })),
+          totals: {
+            subtotal: totals.subtotal,
+            shipping: totals.shipping,
+            total: totals.total,
+          },
+        }),
+      });
+      const data = await res.json();
+      return {
+        emailSent: Boolean(data?.sent),
+        emailConfigured: Boolean(data?.configured),
+      };
+    } catch {
+      return { emailSent: false, emailConfigured: false };
+    }
+  }
+
+  async function finishOrder(meta: {
     orderId: string;
     payment: string;
     razorpayPaymentId?: string;
     razorpayOrderId?: string;
   }) {
+    const emailStatus = await sendThankYouEmail(meta);
     const payload = {
       orderId: meta.orderId,
       items,
@@ -70,6 +117,8 @@ export default function CheckoutPage() {
       payment: meta.payment,
       razorpayPaymentId: meta.razorpayPaymentId,
       razorpayOrderId: meta.razorpayOrderId,
+      emailSent: emailStatus.emailSent,
+      emailConfigured: emailStatus.emailConfigured,
       createdAt: new Date().toISOString(),
     };
     sessionStorage.setItem("san-marco-last-order", JSON.stringify(payload));
@@ -84,8 +133,7 @@ export default function CheckoutPage() {
 
     try {
       if (payment === "cod") {
-        await new Promise((r) => setTimeout(r, 500));
-        finishOrder({ orderId: localOrderId, payment: "cod" });
+        await finishOrder({ orderId: localOrderId, payment: "cod" });
         return;
       }
 
@@ -148,7 +196,7 @@ export default function CheckoutPage() {
             if (!verifyRes.ok || !verifyData.accepted) {
               throw new Error(verifyData?.error || "Payment verification failed");
             }
-            finishOrder({
+            await finishOrder({
               orderId: localOrderId,
               payment: "razorpay",
               razorpayPaymentId: response.razorpay_payment_id,
@@ -225,13 +273,14 @@ export default function CheckoutPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email (optional)</Label>
+                  <Label htmlFor="email">Email</Label>
                   <Input
                     id="email"
                     type="email"
+                    required
                     value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
-                    placeholder="For order updates"
+                    placeholder="We’ll send your thank-you & order confirmation"
                   />
                 </div>
                 <div className="space-y-2 md:col-span-2">

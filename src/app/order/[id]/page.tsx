@@ -12,7 +12,8 @@ type StoredOrder = {
   totals: { total: number; count: number };
   payment: string;
   razorpayPaymentId?: string;
-  shipping: { name: string; city: string };
+  emailSent?: boolean;
+  shipping: { name: string; city: string; email?: string };
 };
 
 export default function OrderConfirmationPage() {
@@ -58,12 +59,19 @@ export default function OrderConfirmationPage() {
             {order.razorpayPaymentId ? (
               <p className="text-xs">Razorpay ID: {order.razorpayPaymentId}</p>
             ) : null}
+            {order.shipping.email ? (
+              <p className="pt-2 text-burgundy">
+                {order.emailSent
+                  ? `A thank-you email was sent to ${order.shipping.email}.`
+                  : `We’ll also reach you at ${order.shipping.email} / WhatsApp shortly.`}
+              </p>
+            ) : null}
           </div>
         )}
         <p className="mt-6 text-sm text-ink/55">
-          A concierge confirmation will be shared on WhatsApp/email shortly. Questions?{" "}
+          Questions?{" "}
           <a className="text-burgundy underline" href={`https://wa.me/${BRAND.whatsapp}`}>
-            Message us
+            Message us on WhatsApp
           </a>
           .
         </p>
