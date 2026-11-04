@@ -10,16 +10,19 @@ import { Label } from "@/components/ui/label";
 import { cartTotals, useCart } from "@/store/cart";
 import { formatINR, cn } from "@/lib/utils";
 import { BRAND } from "@/data/products";
+import { loadRazorpayScript } from "@/lib/load-razorpay";
 
 type Step = 1 | 2 | 3;
+type PayMethod = "razorpay" | "cod";
 
 export default function CheckoutPage() {
   const router = useRouter();
   const { items, clear } = useCart();
   const totals = cartTotals(items);
   const [step, setStep] = useState<Step>(1);
-  const [payment, setPayment] = useState<"upi" | "card" | "cod">("upi");
+  const [payment, setPayment] = useState<PayMethod>("razorpay");
   const [placing, setPlacing] = useState(false);
+  const [error, setError] = useState("");
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -44,8 +47,8 @@ export default function CheckoutPage() {
   if (items.length === 0) {
     return (
       <div className="mx-auto max-w-xl px-4 py-24 text-center">
-        <h1 className="font-display text-4xl text-burgundy">Your bag is empty</h1>
-        <p className="mt-3 text-ink/60">Add a design before checking out.</p>
+        <h1 className="font-display text-4xl font-bold text-burgundy">Your bag is empty</h1>
+        <p className="mt-3 font-medium text-ink/70">Add a design before checking out.</p>
         <Button asChild className="mt-8">
           <Link href="/shop">Browse Collection</Link>
         </Button>
@@ -53,29 +56,131 @@ export default function CheckoutPage() {
     );
   }
 
-  async function placeOrder() {
-    setPlacing(true);
-    const orderId = `SM${Date.now().toString().slice(-8)}`;
+  function finishOrder(meta: {
+    orderId: string;
+    payment: string;
+    razorpayPaymentId?: string;
+    razorpayOrderId?: string;
+  }) {
     const payload = {
-      orderId,
+      orderId: meta.orderId,
       items,
       totals,
       shipping: form,
-      payment,
+      payment: meta.payment,
+      razorpayPaymentId: meta.razorpayPaymentId,
+      razorpayOrderId: meta.razorpayOrderId,
       createdAt: new Date().toISOString(),
     };
-    if (typeof window !== "undefined") {
-      sessionStorage.setItem("san-marco-last-order", JSON.stringify(payload));
-    }
-    await new Promise((r) => setTimeout(r, 900));
+    sessionStorage.setItem("san-marco-last-order", JSON.stringify(payload));
     clear();
-    router.push(`/order/${orderId}`);
+    router.push(`/order/${meta.orderId}`);
+  }
+
+  async function placeOrder() {
+    setPlacing(true);
+    setError("");
+    const localOrderId = `SM${Date.now().toString().slice(-8)}`;
+
+    try {
+      if (payment === "cod") {
+        await new Promise((r) => setTimeout(r, 500));
+        finishOrder({ orderId: localOrderId, payment: "cod" });
+        return;
+      }
+
+      const orderRes = await fetch("/api/razorpay/order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: totals.total,
+          currency: "INR",
+          receipt: localOrderId,
+          notes: {
+            customer: form.name,
+            phone: form.phone,
+            email: form.email || "",
+            city: form.city,
+          },
+        }),
+      });
+
+      const orderData = await orderRes.json();
+      if (!orderRes.ok) {
+        throw new Error(orderData?.error || "Could not start payment");
+      }
+
+      const ready = await loadRazorpayScript();
+      if (!ready || !window.Razorpay) {
+        throw new Error("Razorpay failed to load. Check your connection and try again.");
+      }
+
+      const options = {
+        key: orderData.keyId as string,
+        amount: orderData.amount as number,
+        currency: (orderData.currency as string) || "INR",
+        name: "San Marco",
+        description: `Order ${localOrderId}`,
+        image: "/brand/san-marco-logo.jpg",
+        order_id: orderData.orderId as string | undefined,
+        prefill: {
+          name: form.name,
+          email: form.email || undefined,
+          contact: form.phone,
+        },
+        notes: {
+          receipt: localOrderId,
+          address: form.address,
+        },
+        theme: { color: "#6b1f2a" },
+        handler: async (response: {
+          razorpay_payment_id: string;
+          razorpay_order_id?: string;
+          razorpay_signature?: string;
+        }) => {
+          try {
+            const verifyRes = await fetch("/api/razorpay/verify", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(response),
+            });
+            const verifyData = await verifyRes.json();
+            if (!verifyRes.ok || !verifyData.accepted) {
+              throw new Error(verifyData?.error || "Payment verification failed");
+            }
+            finishOrder({
+              orderId: localOrderId,
+              payment: "razorpay",
+              razorpayPaymentId: response.razorpay_payment_id,
+              razorpayOrderId: response.razorpay_order_id,
+            });
+          } catch (e) {
+            setError(e instanceof Error ? e.message : "Payment verification failed");
+            setPlacing(false);
+          }
+        },
+        modal: {
+          ondismiss: () => {
+            setPlacing(false);
+            setError("Payment window closed. You can try again anytime.");
+          },
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not place order");
+      setPlacing(false);
+    }
   }
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 md:px-8">
-      <h1 className="font-display text-5xl text-burgundy">Checkout</h1>
-      <p className="mt-2 text-ink/60">A calm, three-step path — shipping, payment, review.</p>
+      <h1 className="font-display text-5xl font-bold text-burgundy">Checkout</h1>
+      <p className="mt-2 font-medium text-ink/70">
+        Secure checkout powered by Razorpay — UPI, cards, netbanking & wallets.
+      </p>
 
       <ol className="mt-8 flex gap-2 md:gap-4">
         {[
@@ -86,7 +191,7 @@ export default function CheckoutPage() {
           <li
             key={s.n}
             className={cn(
-              "flex-1 border-b-2 pb-3 text-[11px] uppercase tracking-[0.16em]",
+              "flex-1 border-b-2 pb-3 text-[11px] font-semibold uppercase tracking-[0.16em]",
               step >= s.n ? "border-burgundy text-burgundy" : "border-burgundy/15 text-ink/40"
             )}
           >
@@ -99,7 +204,7 @@ export default function CheckoutPage() {
         <div className="border border-gold/20 bg-cream/80 p-6 md:p-8">
           {step === 1 && (
             <div className="space-y-5">
-              <h2 className="font-display text-3xl text-burgundy">Shipping details</h2>
+              <h2 className="font-display text-3xl font-bold text-burgundy">Shipping details</h2>
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2 md:col-span-2">
                   <Label htmlFor="name">Full name</Label>
@@ -120,7 +225,7 @@ export default function CheckoutPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">Email (optional)</Label>
                   <Input
                     id="email"
                     type="email"
@@ -135,7 +240,7 @@ export default function CheckoutPage() {
                     id="address"
                     value={form.address}
                     onChange={(e) => setForm({ ...form, address: e.target.value })}
-                    placeholder="House, street, landmark"
+                    placeholder="House / street / landmark"
                   />
                 </div>
                 <div className="space-y-2">
@@ -160,6 +265,7 @@ export default function CheckoutPage() {
                     id="pincode"
                     value={form.pincode}
                     onChange={(e) => setForm({ ...form, pincode: e.target.value })}
+                    placeholder="6 digits"
                   />
                 </div>
                 <div className="space-y-2 md:col-span-2">
@@ -185,17 +291,25 @@ export default function CheckoutPage() {
 
           {step === 2 && (
             <div className="space-y-5">
-              <h2 className="font-display text-3xl text-burgundy">Payment</h2>
-              <p className="text-sm text-ink/60">
-                Demo checkout — no real charge. Choose how you would like to pay.
+              <h2 className="font-display text-3xl font-bold text-burgundy">Payment</h2>
+              <p className="text-sm font-medium text-ink/70">
+                Pay securely with Razorpay — UPI, cards, netbanking and wallets. Or choose Cash on
+                Delivery.
               </p>
               <div className="space-y-3">
                 {(
                   [
-                    { id: "upi", title: "UPI", desc: "GPay, PhonePe, Paytm" },
-                    { id: "card", title: "Card", desc: "Visa, Mastercard, RuPay" },
-                    { id: "cod", title: "Cash on Delivery", desc: "Pay when your bag arrives" },
-                  ] as const
+                    {
+                      id: "razorpay" as const,
+                      title: "Pay Online · Razorpay",
+                      desc: "UPI · Cards · Netbanking · Wallets",
+                    },
+                    {
+                      id: "cod" as const,
+                      title: "Cash on Delivery",
+                      desc: "Pay when your bag arrives",
+                    },
+                  ]
                 ).map((opt) => (
                   <button
                     key={opt.id}
@@ -208,8 +322,8 @@ export default function CheckoutPage() {
                     )}
                   >
                     <div>
-                      <p className="font-medium text-burgundy">{opt.title}</p>
-                      <p className="text-xs text-ink/55">{opt.desc}</p>
+                      <p className="font-semibold text-burgundy">{opt.title}</p>
+                      <p className="text-xs font-medium text-ink/60">{opt.desc}</p>
                     </div>
                     <span
                       className={cn(
@@ -235,9 +349,9 @@ export default function CheckoutPage() {
 
           {step === 3 && (
             <div className="space-y-5">
-              <h2 className="font-display text-3xl text-burgundy">Review & place</h2>
-              <div className="border border-gold/20 bg-ivory/50 p-4 text-sm text-ink/70 space-y-1">
-                <p className="font-medium text-burgundy">{form.name}</p>
+              <h2 className="font-display text-3xl font-bold text-burgundy">Review & pay</h2>
+              <div className="space-y-1 border border-gold/20 bg-ivory/50 p-4 text-sm font-medium text-ink/75">
+                <p className="font-semibold text-burgundy">{form.name}</p>
                 <p>{form.address}</p>
                 <p>
                   {form.city}
@@ -245,18 +359,32 @@ export default function CheckoutPage() {
                 </p>
                 <p>{form.phone}</p>
                 {form.email && <p>{form.email}</p>}
-                <p className="pt-2 capitalize">Payment: {payment === "cod" ? "Cash on Delivery" : payment.toUpperCase()}</p>
+                <p className="pt-2">
+                  Payment:{" "}
+                  {payment === "cod" ? "Cash on Delivery" : "Razorpay (UPI / Card / Netbanking)"}
+                </p>
                 {form.notes && <p className="pt-2 italic">Gift note: {form.notes}</p>}
               </div>
-              <p className="text-xs text-ink/50">
-                Need changes? WhatsApp {BRAND.phone} after placing — our concierge will assist.
+              {error ? (
+                <p className="border border-burgundy/30 bg-burgundy/5 px-3 py-2 text-sm font-semibold text-burgundy">
+                  {error}
+                </p>
+              ) : null}
+              <p className="text-xs font-medium text-ink/55">
+                Need help? WhatsApp {BRAND.phone} — our concierge will assist.
               </p>
               <div className="flex gap-3">
-                <Button variant="outline" onClick={() => setStep(2)}>
+                <Button variant="outline" onClick={() => setStep(2)} disabled={placing}>
                   Back
                 </Button>
                 <Button size="lg" onClick={placeOrder} disabled={placing}>
-                  {placing ? "Placing order…" : `Place Order · ${formatINR(totals.total)}`}
+                  {placing
+                    ? payment === "cod"
+                      ? "Placing order…"
+                      : "Opening Razorpay…"
+                    : payment === "cod"
+                      ? `Place COD Order · ${formatINR(totals.total)}`
+                      : `Pay ${formatINR(totals.total)} securely`}
                 </Button>
               </div>
             </div>
@@ -264,7 +392,7 @@ export default function CheckoutPage() {
         </div>
 
         <aside className="h-fit border border-gold/20 bg-ivory/40 p-6">
-          <h2 className="font-display text-2xl text-burgundy">Order summary</h2>
+          <h2 className="font-display text-2xl font-bold text-burgundy">Order summary</h2>
           <ul className="mt-5 space-y-4">
             {items.map((item) => (
               <li key={item.key} className="flex gap-3">
@@ -272,16 +400,16 @@ export default function CheckoutPage() {
                   <Image src={item.image} alt={item.name} fill className="object-cover" />
                 </div>
                 <div className="flex-1 text-sm">
-                  <p className="text-burgundy">{item.name}</p>
-                  <p className="text-xs text-ink/50">
+                  <p className="font-semibold text-burgundy">{item.name}</p>
+                  <p className="text-xs font-medium text-ink/55">
                     {item.variantLabel} · ×{item.quantity}
                   </p>
-                  <p className="mt-1">{formatINR(item.price * item.quantity)}</p>
+                  <p className="mt-1 font-semibold">{formatINR(item.price * item.quantity)}</p>
                 </div>
               </li>
             ))}
           </ul>
-          <div className="mt-6 space-y-2 border-t border-gold/20 pt-4 text-sm">
+          <div className="mt-6 space-y-2 border-t border-gold/20 pt-4 text-sm font-medium">
             <div className="flex justify-between">
               <span className="text-ink/55">Subtotal</span>
               <span>{formatINR(totals.subtotal)}</span>
@@ -294,11 +422,14 @@ export default function CheckoutPage() {
               <span className="text-ink/55">Shipping</span>
               <span>{totals.shipping === 0 ? "Complimentary" : formatINR(totals.shipping)}</span>
             </div>
-            <div className="flex justify-between pt-2 font-display text-2xl text-burgundy">
+            <div className="flex justify-between pt-2 font-display text-2xl font-bold text-burgundy">
               <span>Total</span>
               <span>{formatINR(totals.total)}</span>
             </div>
           </div>
+          <p className="mt-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-gold-deep">
+            Secured by Razorpay
+          </p>
         </aside>
       </div>
     </div>

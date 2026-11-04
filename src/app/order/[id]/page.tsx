@@ -11,6 +11,7 @@ type StoredOrder = {
   orderId: string;
   totals: { total: number; count: number };
   payment: string;
+  razorpayPaymentId?: string;
   shipping: { name: string; city: string };
 };
 
@@ -46,7 +47,17 @@ export default function OrderConfirmationPage() {
               {order.totals.count} item{order.totals.count > 1 ? "s" : ""} ·{" "}
               {formatINR(order.totals.total)}
             </p>
-            <p className="capitalize">Payment: {order.payment}</p>
+            <p className="capitalize">
+              Payment:{" "}
+              {order.payment === "razorpay"
+                ? "Paid online (Razorpay)"
+                : order.payment === "cod"
+                  ? "Cash on Delivery"
+                  : order.payment}
+            </p>
+            {order.razorpayPaymentId ? (
+              <p className="text-xs">Razorpay ID: {order.razorpayPaymentId}</p>
+            ) : null}
           </div>
         )}
         <p className="mt-6 text-sm text-ink/55">
