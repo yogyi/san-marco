@@ -19,12 +19,46 @@ const sans = Manrope({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.sanmarcofurnishings.com"),
   title: {
     default: "San Marco · Premium Bedding & Comforters",
     template: "%s · San Marco",
   },
   description:
     "San Marco Festive Comfort Collection — premium Made-in-India comforters and bedsheet sets. Soft, reversible, gift-ready.",
+  applicationName: "San Marco",
+  icons: {
+    icon: [
+      { url: "/brand/icon-512.png", type: "image/png", sizes: "512x512" },
+      { url: "/icon.png", type: "image/png", sizes: "512x512" },
+    ],
+    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
+    shortcut: "/favicon.ico",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_IN",
+    url: "https://www.sanmarcofurnishings.com",
+    siteName: "San Marco",
+    title: "San Marco · Premium Bedding & Comforters",
+    description:
+      "San Marco Festive Comfort Collection — premium Made-in-India comforters and bedsheet sets. Soft, reversible, gift-ready.",
+    images: [
+      {
+        url: "/brand/og-image.jpg",
+        width: 1200,
+        height: 1200,
+        alt: "San Marco Premium Bedding & Comforters",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "San Marco · Premium Bedding & Comforters",
+    description:
+      "San Marco Festive Comfort Collection — premium Made-in-India comforters and bedsheet sets. Soft, reversible, gift-ready.",
+    images: ["/brand/og-image.jpg"],
+  },
 };
 
 export default function RootLayout({
