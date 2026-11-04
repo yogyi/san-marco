@@ -1,7 +1,7 @@
 import crypto from "crypto";
 
 export const RAZORPAY_KEY_ID =
-  process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID?.trim() || "rzp_live_TdVKupjbPwZKD9";
+  process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID?.trim() || "rzp_live_Tw40K7fiTy4FWF";
 
 export const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET?.trim() || "";
 
