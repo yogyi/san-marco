@@ -55,7 +55,7 @@ export default async function ShopPage({
       <div className="mb-8 text-center">
         <h1 className="text-3xl font-semibold text-ink md:text-4xl">{heading}</h1>
         <p className="mt-2 text-sm text-muted">
-          {list.length} designs · Double sets from ₹1,999
+          {list.length} designs · Double sets from ₹2,399
         </p>
       </div>
 

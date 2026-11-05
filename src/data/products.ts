@@ -42,7 +42,7 @@ export const VARIANTS: ProductVariant[] = [
     description: "Comforter + bed sheet & 2 pillow covers",
     dimensions: "Comforter 220 × 240 cm · Bedsheet & pillow covers included",
     mrp: 4999,
-    price: 1999,
+    price: 2399,
     skuSuffix: "DB-SET",
   },
   {

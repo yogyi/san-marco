@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { formatINR } from "@/lib/utils";
 
 const tiers = [
-  { label: "Double Bed Set", price: 1999, mrp: 4999, note: "Comforter + sheet + pillows" },
+  { label: "Double Bed Set", price: 2399, mrp: 4999, note: "Comforter + sheet + pillows" },
   { label: "Double Comforter", price: 1499, mrp: 3999, note: "Comforter only" },
   { label: "Single Comforter", price: 1299, mrp: 2999, note: "150 × 230 cm" },
 ];

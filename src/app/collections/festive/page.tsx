@@ -25,7 +25,7 @@ export default function FestiveCollectionPage() {
           <div className="mt-8 flex flex-wrap gap-6 text-sm">
             <div>
               <p className="text-cream/50">Double Set</p>
-              <p className="font-display text-3xl text-gold">{formatINR(1999)}</p>
+              <p className="font-display text-3xl text-gold">{formatINR(2399)}</p>
             </div>
             <div>
               <p className="text-cream/50">Double Comforter</p>
