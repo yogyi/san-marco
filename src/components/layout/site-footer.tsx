@@ -13,6 +13,7 @@ const shopLinks = [
 
 const helpLinks = [
   { href: "/shipping", label: "Shipping & Returns" },
+  { href: "/craft", label: "Our Craft" },
   { href: "/about", label: "Our Story" },
   { href: "/contact", label: "Contact" },
   { href: "/checkout", label: "Your Bag" },

@@ -63,6 +63,7 @@ Checkout requires the customer’s email so the thank-you message can be deliver
 - Home, shop (filters), product detail with size variants
 - Cart drawer + 3-step checkout with live Razorpay payments
 - Thank-you purchase email + store order alert on every order
+- Our Craft page with factory quilting & packaging photos
 - Festive collection, gifting, about, contact, shipping pages
 - Product imagery from the brand PDF; specs from the product sheet
 

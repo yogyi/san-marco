@@ -51,12 +51,20 @@ export function BrandStory() {
             and everyday luxury.
           </p>
         </div>
-        <Link
-          href="/about"
-          className="mt-9 inline-block border border-burgundy/80 px-8 py-3.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-burgundy transition hover:bg-burgundy hover:text-cream"
-        >
-          Our Story
-        </Link>
+        <div className="mt-9 flex flex-wrap gap-3">
+          <Link
+            href="/about"
+            className="inline-block border border-burgundy/80 px-8 py-3.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-burgundy transition hover:bg-burgundy hover:text-cream"
+          >
+            Our Story
+          </Link>
+          <Link
+            href="/craft"
+            className="inline-block bg-burgundy px-8 py-3.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-cream transition hover:bg-burgundy-deep"
+          >
+            Our Craft
+          </Link>
+        </div>
       </div>
     </section>
   );
