@@ -5,8 +5,11 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import type { Product } from "@/data/products";
 import { VARIANTS } from "@/data/products";
-import { cn, formatINR } from "@/lib/utils";
+import { overseasUnitPrice } from "@/data/markets";
+import { cn } from "@/lib/utils";
+import { formatMoney } from "@/lib/money";
 import { useCart } from "@/store/cart";
+import { useActiveMarket } from "@/store/market";
 
 const stageByCollection: Record<Product["collection"], string> = {
   Venice: "from-[#e8f0ef] via-[#f4f7f6] to-[#dde8e6]",
@@ -16,7 +19,10 @@ const stageByCollection: Record<Product["collection"], string> = {
 
 export function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
   const addItem = useCart((s) => s.addItem);
+  const market = useActiveMarket();
+  const isIndia = market.id === "in";
   const starter = VARIANTS[0];
+  const fromPrice = isIndia ? starter.price : overseasUnitPrice(market, "one", "single");
   const stage = stageByCollection[product.collection] ?? stageByCollection.Tiffany;
 
   return (
@@ -63,18 +69,25 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
         <div className="absolute inset-x-0 bottom-0 z-10 flex translate-y-full flex-col gap-0 opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
           <button
             className="bg-burgundy py-3 text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-white hover:bg-burgundy-deep"
-            onClick={() =>
-              addItem({
-                productId: product.id,
-                slug: product.slug,
-                name: product.name,
-                image: product.image,
-                variantId: starter.id,
-                variantLabel: starter.label,
-                price: starter.price,
-                mrp: starter.mrp,
-              })
-            }
+            onClick={() => {
+              if (isIndia) {
+                addItem({
+                  productId: product.id,
+                  slug: product.slug,
+                  name: product.name,
+                  image: product.image,
+                  variantId: starter.id,
+                  variantLabel: starter.label,
+                  price: starter.price,
+                  mrp: starter.mrp,
+                  currency: "INR",
+                  marketId: "in",
+                  inrCapture: starter.price,
+                });
+              } else {
+                window.location.href = `/product/${product.slug}`;
+              }
+            }}
           >
             Add to Cart
           </button>
@@ -98,8 +111,14 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
         </Link>
         <p className="text-xs font-medium text-muted">{product.tagline}</p>
         <div className="flex items-center justify-center gap-2 pt-1 md:justify-start">
-          <span className="text-sm font-bold text-ink">{formatINR(starter.price)}</span>
-          <span className="text-xs font-medium text-muted line-through">{formatINR(starter.mrp)}</span>
+          <span className="text-sm font-bold text-ink">
+            {isIndia ? formatMoney(fromPrice, market) : `From ${formatMoney(fromPrice, market)}`}
+          </span>
+          {isIndia ? (
+            <span className="text-xs font-medium text-muted line-through">
+              {formatMoney(starter.mrp, market)}
+            </span>
+          ) : null}
         </div>
       </div>
     </motion.article>

@@ -6,11 +6,15 @@ import { Minus, Plus, Trash2 } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useCart, cartTotals } from "@/store/cart";
-import { formatINR } from "@/lib/utils";
+import { useActiveMarket } from "@/store/market";
+import { formatMoney } from "@/lib/money";
 
 export function CartDrawer() {
   const { items, isOpen, openCart, closeCart, updateQty, removeItem } = useCart();
-  const { subtotal, savings, shipping, total, count } = cartTotals(items);
+  const market = useActiveMarket();
+  const { subtotal, savings, shipping, total, count } = cartTotals(items, {
+    freeShipping: true,
+  });
 
   return (
     <Sheet open={isOpen} onOpenChange={(open) => (open ? openCart() : closeCart())}>
@@ -18,7 +22,9 @@ export function CartDrawer() {
         <SheetHeader>
           <SheetTitle>Your Atelier Bag</SheetTitle>
           <p className="text-sm text-ink/60">
-            {count === 0 ? "Your bag is waiting to be filled." : `${count} piece${count > 1 ? "s" : ""} selected`}
+            {count === 0
+              ? "Your bag is waiting to be filled."
+              : `${count} piece${count > 1 ? "s" : ""} · ${market.shortLabel}`}
           </p>
         </SheetHeader>
 
@@ -43,7 +49,7 @@ export function CartDrawer() {
                   <div className="flex-1">
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <p className="font-display text-lg text-burgundy leading-tight">{item.name}</p>
+                        <p className="font-display text-lg leading-tight text-burgundy">{item.name}</p>
                         <p className="mt-1 text-xs text-ink/55">{item.variantLabel}</p>
                       </div>
                       <button
@@ -74,11 +80,13 @@ export function CartDrawer() {
                       </div>
                       <div className="text-right">
                         <p className="text-sm font-medium text-burgundy">
-                          {formatINR(item.price * item.quantity)}
+                          {formatMoney(item.price * item.quantity, market)}
                         </p>
-                        <p className="text-xs text-ink/40 line-through">
-                          {formatINR(item.mrp * item.quantity)}
-                        </p>
+                        {item.mrp > 0 ? (
+                          <p className="text-xs text-ink/40 line-through">
+                            {formatMoney(item.mrp * item.quantity, market)}
+                          </p>
+                        ) : null}
                       </div>
                     </div>
                   </div>
@@ -89,26 +97,29 @@ export function CartDrawer() {
         </div>
 
         {items.length > 0 && (
-          <div className="border-t border-gold/20 bg-ivory/50 px-6 py-5 space-y-3">
+          <div className="space-y-3 border-t border-gold/20 bg-ivory/50 px-6 py-5">
             <div className="flex justify-between text-sm">
               <span className="text-ink/60">Subtotal</span>
-              <span className="text-burgundy">{formatINR(subtotal)}</span>
+              <span className="text-burgundy">{formatMoney(subtotal, market)}</span>
             </div>
             {savings > 0 && (
               <div className="flex justify-between text-sm">
                 <span className="text-ink/60">You save</span>
-                <span className="text-burgundy">{formatINR(savings)}</span>
+                <span className="text-burgundy">{formatMoney(savings, market)}</span>
               </div>
             )}
             <div className="flex justify-between text-sm">
               <span className="text-ink/60">Shipping</span>
               <span className="text-burgundy">
-                {shipping === 0 ? "Complimentary" : formatINR(shipping)}
+                {shipping === 0 ? "Complimentary" : formatMoney(shipping, market)}
               </span>
             </div>
+            <p className="text-[11px] font-medium leading-snug text-ink/55">{market.shippingLine}</p>
             <div className="flex justify-between border-t border-gold/20 pt-3">
               <span className="font-display text-xl text-burgundy">Total</span>
-              <span className="font-display text-xl text-burgundy">{formatINR(total)}</span>
+              <span className="font-display text-xl text-burgundy">
+                {formatMoney(total, market)}
+              </span>
             </div>
             <Button asChild className="w-full" size="lg" onClick={closeCart}>
               <Link href="/checkout">Proceed to Checkout</Link>

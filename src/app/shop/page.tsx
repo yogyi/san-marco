@@ -1,6 +1,7 @@
 import { products } from "@/data/products";
 import { ProductCard } from "@/components/shop/product-card";
 import { ShopFilters } from "@/components/shop/shop-filters";
+import { ShopPriceNote } from "@/components/shop/shop-price-note";
 import {
   collectionDisplayName,
   normalizeCollectionParam,
@@ -54,9 +55,7 @@ export default async function ShopPage({
     <div className="mx-auto max-w-[1400px] px-4 py-10 md:px-8 md:py-14">
       <div className="mb-8 text-center">
         <h1 className="text-3xl font-semibold text-ink md:text-4xl">{heading}</h1>
-        <p className="mt-2 text-sm text-muted">
-          {list.length} designs · Double sets from ₹2,399
-        </p>
+        <ShopPriceNote count={list.length} />
       </div>
 
       <ShopFilters

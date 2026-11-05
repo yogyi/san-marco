@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { BRAND } from "@/data/products";
+import { MarketSwitcher } from "@/components/layout/market-switcher";
 
 const shopLinks = [
   { href: "/shop", label: "All Bedding" },
@@ -117,11 +118,14 @@ export function SiteFooter() {
 
         <div>
           <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-gold-soft">
-            At Home
+            Ship to
           </p>
+          <div className="mt-5">
+            <MarketSwitcher className="[&_select]:border-cream/30 [&_select]:bg-burgundy-deep [&_select]:text-cream" />
+          </div>
           <p className="mt-5 text-sm font-medium leading-relaxed text-cream/85">
-            Thirteen designs across Venice, Alberta and Tiffany — reversible comfort with a reusable
-            gift bag in every order.
+            India keeps festive ₹ pricing. Overseas markets show fixed local prices with shipping
+            built in — switch above anytime.
           </p>
           <p className="mt-5 text-[11px] leading-relaxed tracking-wide text-cream/45">
             Sold & marketed by {BRAND.marketedBy}

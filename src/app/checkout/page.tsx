@@ -8,9 +8,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cartTotals, useCart } from "@/store/cart";
-import { formatINR, cn } from "@/lib/utils";
+import { cn, formatINR } from "@/lib/utils";
+import { formatMoney } from "@/lib/money";
 import { BRAND } from "@/data/products";
 import { loadRazorpayScript } from "@/lib/load-razorpay";
+import { useActiveMarket } from "@/store/market";
 
 type Step = 1 | 2 | 3;
 type PayMethod = "razorpay" | "cod";
@@ -18,7 +20,10 @@ type PayMethod = "razorpay" | "cod";
 export default function CheckoutPage() {
   const router = useRouter();
   const { items, clear } = useCart();
-  const totals = cartTotals(items);
+  const market = useActiveMarket();
+  const isIndia = market.id === "in";
+  const totals = cartTotals(items, { freeShipping: true });
+  const payAmountInr = isIndia ? totals.total : Math.max(totals.inrCapture, 1);
   const [step, setStep] = useState<Step>(1);
   const [payment, setPayment] = useState<PayMethod>("razorpay");
   const [placing, setPlacing] = useState(false);
@@ -31,20 +36,22 @@ export default function CheckoutPage() {
     city: "",
     state: "",
     pincode: "",
+    country: "",
     notes: "",
   });
 
   const validShipping = useMemo(() => {
     const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim());
+    const pinOk = isIndia ? form.pincode.trim().length >= 6 : form.pincode.trim().length >= 3;
     return (
       form.name.trim() &&
       emailOk &&
-      form.phone.trim().length >= 10 &&
+      form.phone.trim().length >= 8 &&
       form.address.trim() &&
       form.city.trim() &&
-      form.pincode.trim().length >= 6
+      pinOk
     );
-  }, [form]);
+  }, [form, isIndia]);
 
   if (items.length === 0) {
     return (
@@ -133,6 +140,9 @@ export default function CheckoutPage() {
 
     try {
       if (payment === "cod") {
+        if (!isIndia) {
+          throw new Error("Cash on Delivery is only available in India.");
+        }
         await finishOrder({ orderId: localOrderId, payment: "cod" });
         return;
       }
@@ -141,7 +151,7 @@ export default function CheckoutPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          amount: totals.total,
+          amount: payAmountInr,
           currency: "INR",
           receipt: localOrderId,
           notes: {
@@ -149,6 +159,9 @@ export default function CheckoutPage() {
             phone: form.phone,
             email: form.email || "",
             city: form.city,
+            market: market.id,
+            displayTotal: `${market.currency} ${totals.total}`,
+            country: form.country || market.label,
           },
         }),
       });
@@ -227,7 +240,9 @@ export default function CheckoutPage() {
     <div className="mx-auto max-w-7xl px-4 py-12 md:px-8">
       <h1 className="font-display text-5xl font-bold text-burgundy">Checkout</h1>
       <p className="mt-2 font-medium text-ink/70">
-        Secure checkout powered by Razorpay — UPI, cards, netbanking & wallets.
+        {isIndia
+          ? "Secure checkout powered by Razorpay — UPI, cards, netbanking & wallets."
+          : `${market.label} pricing · ${market.shippingLine}. Prepaid via Razorpay (INR settlement).`}
       </p>
 
       <ol className="mt-8 flex gap-2 md:gap-4">
@@ -309,14 +324,25 @@ export default function CheckoutPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="pincode">PIN code</Label>
+                  <Label htmlFor="pincode">{isIndia ? "PIN code" : "ZIP / Postal code"}</Label>
                   <Input
                     id="pincode"
                     value={form.pincode}
                     onChange={(e) => setForm({ ...form, pincode: e.target.value })}
-                    placeholder="6 digits"
+                    placeholder={isIndia ? "6 digits" : "Postal / ZIP"}
                   />
                 </div>
+                {!isIndia ? (
+                  <div className="space-y-2 md:col-span-2">
+                    <Label htmlFor="country">Country</Label>
+                    <Input
+                      id="country"
+                      value={form.country || market.label}
+                      onChange={(e) => setForm({ ...form, country: e.target.value })}
+                      placeholder={market.label}
+                    />
+                  </div>
+                ) : null}
                 <div className="space-y-2 md:col-span-2">
                   <Label htmlFor="notes">Gift note (optional)</Label>
                   <Input
@@ -350,14 +376,20 @@ export default function CheckoutPage() {
                   [
                     {
                       id: "razorpay" as const,
-                      title: "Pay Online · Razorpay",
-                      desc: "UPI · Cards · Netbanking · Wallets",
+                      title: isIndia ? "Pay Online · Razorpay" : "Pay Online · Prepaid",
+                      desc: isIndia
+                        ? "UPI · Cards · Netbanking · Wallets"
+                        : `Cards · International prepaid · Charged in INR (~${formatINR(payAmountInr)})`,
                     },
-                    {
-                      id: "cod" as const,
-                      title: "Cash on Delivery",
-                      desc: "Pay when your bag arrives",
-                    },
+                    ...(isIndia
+                      ? [
+                          {
+                            id: "cod" as const,
+                            title: "Cash on Delivery",
+                            desc: "Pay when your bag arrives",
+                          },
+                        ]
+                      : []),
                   ]
                 ).map((opt) => (
                   <button
@@ -410,8 +442,13 @@ export default function CheckoutPage() {
                 {form.email && <p>{form.email}</p>}
                 <p className="pt-2">
                   Payment:{" "}
-                  {payment === "cod" ? "Cash on Delivery" : "Razorpay (UPI / Card / Netbanking)"}
+                  {payment === "cod"
+                    ? "Cash on Delivery"
+                    : isIndia
+                      ? "Razorpay (UPI / Card / Netbanking)"
+                      : "Prepaid international (Razorpay)"}
                 </p>
+                <p className="pt-1 text-xs text-ink/55">{market.shippingLine}</p>
                 {form.notes && <p className="pt-2 italic">Gift note: {form.notes}</p>}
               </div>
               {error ? (
@@ -432,8 +469,8 @@ export default function CheckoutPage() {
                       ? "Placing order…"
                       : "Opening Razorpay…"
                     : payment === "cod"
-                      ? `Place COD Order · ${formatINR(totals.total)}`
-                      : `Pay ${formatINR(totals.total)} securely`}
+                      ? `Place COD Order · ${formatMoney(totals.total, market)}`
+                      : `Pay ${formatMoney(totals.total, market)} securely`}
                 </Button>
               </div>
             </div>
@@ -442,6 +479,9 @@ export default function CheckoutPage() {
 
         <aside className="h-fit border border-gold/20 bg-ivory/40 p-6">
           <h2 className="font-display text-2xl font-bold text-burgundy">Order summary</h2>
+          <p className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-gold-deep">
+            {market.shortLabel}
+          </p>
           <ul className="mt-5 space-y-4">
             {items.map((item) => (
               <li key={item.key} className="flex gap-3">
@@ -453,7 +493,9 @@ export default function CheckoutPage() {
                   <p className="text-xs font-medium text-ink/55">
                     {item.variantLabel} · ×{item.quantity}
                   </p>
-                  <p className="mt-1 font-semibold">{formatINR(item.price * item.quantity)}</p>
+                  <p className="mt-1 font-semibold">
+                    {formatMoney(item.price * item.quantity, market)}
+                  </p>
                 </div>
               </li>
             ))}
@@ -461,22 +503,29 @@ export default function CheckoutPage() {
           <div className="mt-6 space-y-2 border-t border-gold/20 pt-4 text-sm font-medium">
             <div className="flex justify-between">
               <span className="text-ink/55">Subtotal</span>
-              <span>{formatINR(totals.subtotal)}</span>
+              <span>{formatMoney(totals.subtotal, market)}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-ink/55">Savings</span>
-              <span>{formatINR(totals.savings)}</span>
-            </div>
+            {totals.savings > 0 ? (
+              <div className="flex justify-between">
+                <span className="text-ink/55">Savings</span>
+                <span>{formatMoney(totals.savings, market)}</span>
+              </div>
+            ) : null}
             <div className="flex justify-between">
               <span className="text-ink/55">Shipping</span>
-              <span>{totals.shipping === 0 ? "Complimentary" : formatINR(totals.shipping)}</span>
+              <span>
+                {totals.shipping === 0 ? "Complimentary" : formatMoney(totals.shipping, market)}
+              </span>
             </div>
             <div className="flex justify-between pt-2 font-display text-2xl font-bold text-burgundy">
               <span>Total</span>
-              <span>{formatINR(totals.total)}</span>
+              <span>{formatMoney(totals.total, market)}</span>
             </div>
           </div>
-          <p className="mt-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-gold-deep">
+          <p className="mt-4 text-[11px] font-medium leading-snug text-ink/55">
+            {market.shippingLine}
+          </p>
+          <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-gold-deep">
             Secured by Razorpay
           </p>
         </aside>

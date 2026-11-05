@@ -36,6 +36,14 @@ RAZORPAY_KEY_SECRET=your_key_secret_from_dashboard
 
 Checkout flow: Shipping → Payment (Razorpay or COD) → Review → Pay / Place order.
 
+## India vs overseas pricing
+
+India keeps festive INR variants (Double Bed Set ₹2,399, etc.) with **free delivery on every order**.
+
+Other regions use the fixed local price table from the overseas pricing brief (AED / SAR / SGD / GBP / EUR / AUD / CAD / USD / KES) with **shipping built into the price** — no strikethrough MRP abroad. Visitors can switch market in the header or footer; geo detection seeds the choice from `x-vercel-ip-country` when available.
+
+Overseas PDP offers **1 Comforter** or **2-Comforter Bundle**, plus Single / Double (+10% packed-weight premium). Checkout is prepaid only (no COD). Razorpay still captures in INR using the brief’s approximate INR amounts.
+
 ## Order confirmation emails
 
 After every successful order (Razorpay or COD), the shopper receives a branded **thank-you / order confirmation** email, and the store inbox gets a new-order alert.

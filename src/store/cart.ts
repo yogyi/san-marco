@@ -10,11 +10,16 @@ export type CartItem = {
   slug: string;
   name: string;
   image: string;
-  variantId: VariantId;
+  variantId: VariantId | string;
   variantLabel: string;
   price: number;
   mrp: number;
   quantity: number;
+  /** Market currency at add time (INR for India, AED/USD/… overseas) */
+  currency?: string;
+  marketId?: string;
+  /** INR amount used for Razorpay capture on overseas orders */
+  inrCapture?: number;
 };
 
 type CartState = {
@@ -81,11 +86,17 @@ export const useCart = create<CartState>()(
   )
 );
 
-export function cartTotals(items: CartItem[]) {
+export function cartTotals(items: CartItem[], opts?: { freeShipping?: boolean }) {
   const subtotal = items.reduce((s, i) => s + i.price * i.quantity, 0);
   const mrpTotal = items.reduce((s, i) => s + i.mrp * i.quantity, 0);
-  const savings = mrpTotal - subtotal;
+  const savings = Math.max(0, mrpTotal - subtotal);
   const count = items.reduce((s, i) => s + i.quantity, 0);
-  const shipping = subtotal >= 1999 || subtotal === 0 ? 0 : 99;
-  return { subtotal, mrpTotal, savings, count, shipping, total: subtotal + shipping };
+  const freeShipping = opts?.freeShipping ?? true;
+  // India + overseas retail: free shipping (overseas freight is built into local price)
+  const shipping = freeShipping || subtotal === 0 ? 0 : subtotal >= 1999 ? 0 : 99;
+  const inrCapture = items.reduce(
+    (s, i) => s + (i.inrCapture ?? (i.currency === "INR" || !i.currency ? i.price : 0)) * i.quantity,
+    0
+  );
+  return { subtotal, mrpTotal, savings, count, shipping, total: subtotal + shipping, inrCapture };
 }

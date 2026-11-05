@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Menu, Search, ShoppingBag, X } from "lucide-react";
 import { useCart, cartTotals } from "@/store/cart";
+import { useActiveMarket } from "@/store/market";
+import { MarketSwitcher } from "@/components/layout/market-switcher";
 import { cn } from "@/lib/utils";
 
 const leftLinks = [
@@ -26,8 +28,13 @@ const mobileLinks = [...leftLinks, ...rightLinks];
 export function SiteHeader() {
   const { items, openCart } = useCart();
   const { count } = cartTotals(items);
+  const market = useActiveMarket();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const topBar =
+    market.id === "in"
+      ? "Festive Comfort Collection · Free delivery on every order · Gift bag with every piece"
+      : `San Marco · ${market.label} · ${market.shippingLine}`;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -38,8 +45,8 @@ export function SiteHeader() {
 
   return (
     <>
-      <div className="bg-burgundy py-2.5 text-center text-[11px] uppercase tracking-[0.22em] text-cream/90">
-        Festive Comfort Collection · Free shipping above ₹1,999 · Gift bag with every piece
+      <div className="bg-burgundy py-2.5 text-center text-[11px] uppercase tracking-[0.18em] text-cream/90">
+        {topBar}
       </div>
       <header
         className={cn(
@@ -86,13 +93,16 @@ export function SiteHeader() {
 
           {/* Right */}
           <div className="justify-self-end flex items-center gap-1 md:gap-2">
-            <nav className="mr-2 hidden items-center gap-7 text-[11px] font-semibold uppercase tracking-[0.18em] text-burgundy md:flex">
+            <nav className="mr-2 hidden items-center gap-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-burgundy lg:flex">
               {rightLinks.map((l) => (
                 <Link key={l.href} href={l.href} className="transition hover:text-burgundy-deep">
                   {l.label}
                 </Link>
               ))}
             </nav>
+            <div className="mr-1 hidden md:block">
+              <MarketSwitcher compact />
+            </div>
             <Link
               href="/shop"
               className="inline-flex p-2 text-burgundy/70 transition hover:text-burgundy"
@@ -135,6 +145,9 @@ export function SiteHeader() {
               <button onClick={() => setMobileOpen(false)} aria-label="Close menu">
                 <X className="h-5 w-5 text-burgundy" />
               </button>
+            </div>
+            <div className="mb-6">
+              <MarketSwitcher />
             </div>
             <nav className="flex flex-col gap-4">
               {mobileLinks.map((l) => (
