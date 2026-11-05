@@ -45,8 +45,9 @@ export default function HomePage() {
         cta="Shop Bedding"
         href="/shop"
         image="/hero/occasion-quilting-blue.jpg"
-        tone="sage"
-        imageFit="cover"
+        tone="navy"
+        imageFit="contain"
+        imageAspect="portrait"
       />
 
       <EditorialBanner

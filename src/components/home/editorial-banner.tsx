@@ -12,6 +12,7 @@ export function EditorialBanner({
   reverse = false,
   tone = "sand",
   imageFit = "contain",
+  imageAspect = "auto",
 }: {
   eyebrow?: string;
   title: string;
@@ -20,22 +21,30 @@ export function EditorialBanner({
   href: string;
   image: string;
   reverse?: boolean;
-  tone?: "sand" | "blush" | "sage";
+  tone?: "sand" | "blush" | "sage" | "navy";
   imageFit?: "contain" | "cover";
+  /** Match tall factory/portrait photos so the full image shows */
+  imageAspect?: "auto" | "portrait";
 }) {
   const stage =
     tone === "blush"
       ? "from-[#f3ebe4] via-[#faf6f1] to-[#eadfd4]"
       : tone === "sage"
         ? "from-[#e8f0ef] via-[#f4f7f6] to-[#dde8e6]"
-        : "from-[#efe8df] via-[#f8f4ee] to-[#e6ddd2]";
+        : tone === "navy"
+          ? "from-[#071433] via-[#0a1b45] to-[#06102e]"
+          : "from-[#efe8df] via-[#f8f4ee] to-[#e6ddd2]";
 
   const panel =
     tone === "blush"
       ? "bg-[#faf6f1]"
       : tone === "sage"
         ? "bg-[#f4f7f6]"
-        : "bg-[#f8f4ee]";
+        : tone === "navy"
+          ? "bg-[#f7f4ef]"
+          : "bg-[#f8f4ee]";
+
+  const portrait = imageAspect === "portrait";
 
   return (
     <section className={cn("border-y border-gold/15", panel)}>
@@ -48,36 +57,41 @@ export function EditorialBanner({
         {/* Image stage */}
         <div
           className={cn(
-            "relative min-h-[340px] md:min-h-[520px]",
-            imageFit === "cover" ? "overflow-hidden" : cn("bg-gradient-to-br p-6 md:p-10", stage)
+            "relative w-full overflow-hidden",
+            portrait
+              ? "aspect-[9/16] w-full"
+              : "min-h-[340px] md:min-h-[520px]",
+            imageFit === "cover" || tone === "navy"
+              ? tone === "navy"
+                ? "bg-[#071433]"
+                : "bg-burgundy-deep/5"
+              : cn("bg-gradient-to-br p-6 md:p-10", stage)
           )}
         >
-          {imageFit === "contain" ? (
+          {imageFit === "contain" && tone !== "navy" ? (
             <>
-              <span aria-hidden className="absolute left-5 top-5 h-5 w-5 border-l border-t border-gold/55 md:left-8 md:top-8" />
-              <span aria-hidden className="absolute right-5 top-5 h-5 w-5 border-r border-t border-gold/55 md:right-8 md:top-8" />
-              <span aria-hidden className="absolute bottom-5 left-5 h-5 w-5 border-b border-l border-gold/55 md:bottom-8 md:left-8" />
-              <span aria-hidden className="absolute bottom-5 right-5 h-5 w-5 border-b border-r border-gold/55 md:bottom-8 md:right-8" />
+              <span aria-hidden className="absolute left-5 top-5 z-10 h-5 w-5 border-l border-t border-gold/55 md:left-8 md:top-8" />
+              <span aria-hidden className="absolute right-5 top-5 z-10 h-5 w-5 border-r border-t border-gold/55 md:right-8 md:top-8" />
+              <span aria-hidden className="absolute bottom-5 left-5 z-10 h-5 w-5 border-b border-l border-gold/55 md:bottom-8 md:left-8" />
+              <span aria-hidden className="absolute bottom-5 right-5 z-10 h-5 w-5 border-b border-r border-gold/55 md:bottom-8 md:right-8" />
               <div
                 aria-hidden
-                className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,rgba(42,28,31,0.06)_100%)]"
+                className="pointer-events-none absolute inset-0 z-10 bg-[radial-gradient(circle_at_center,transparent_40%,rgba(42,28,31,0.06)_100%)]"
               />
             </>
           ) : null}
-          <div className={cn("relative h-full w-full", imageFit === "contain" ? "min-h-[292px] md:min-h-[440px]" : "min-h-[340px] md:min-h-[520px]")}>
-            <Image
-              src={image}
-              alt=""
-              fill
-              className={cn(
-                "object-center",
-                imageFit === "cover"
-                  ? "object-cover"
-                  : "object-contain drop-shadow-[0_22px_40px_rgba(42,28,31,0.16)]"
-              )}
-              sizes="(max-width:768px) 100vw, 50vw"
-            />
-          </div>
+          <Image
+            src={image}
+            alt=""
+            fill
+            className={
+              portrait || imageFit === "cover"
+                ? "object-cover object-center"
+                : "object-contain object-center drop-shadow-[0_22px_40px_rgba(42,28,31,0.16)]"
+            }
+            sizes="(max-width:768px) 100vw, 50vw"
+            priority={portrait}
+          />
         </div>
 
         {/* Copy */}
