@@ -44,8 +44,8 @@ export default function HomePage() {
         body="Starting your day, being around loved ones, and resting well is an occasion. Dress your bed in San Marco — soft loft, beautiful colour, Made in India."
         cta="Shop Bedding"
         href="/shop"
-        image="/hero/occasion-bedroom.jpg"
-        tone="blush"
+        image="/hero/occasion-quilting-blue.jpg"
+        tone="sage"
         imageFit="cover"
       />
 
