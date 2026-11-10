@@ -44,27 +44,29 @@ Other regions use the fixed local price table from the overseas pricing brief (A
 
 Overseas PDP offers **1 Comforter** or **2-Comforter Bundle**, plus Single / Double (+10% packed-weight premium). Checkout is prepaid only (no COD). Razorpay still captures in INR using the brief’s approximate INR amounts.
 
-## Order confirmation emails
+## Thank-you purchase messages
 
-After every successful order (Razorpay or COD), the shopper receives a branded **thank-you / order confirmation** email, and the store inbox gets a new-order alert.
+After every successful order (Razorpay or COD), San Marco sends a **“Thank you for your purchase”** message:
 
-Add **one** of these to `.env.local`:
+1. **Email** to the shopper (branded confirmation) + alert to the store inbox  
+2. **WhatsApp** to the shopper’s phone (optional Meta Cloud API)
+
+Add to `.env.local`:
 
 ```bash
-# Resend (recommended)
+# Email (pick one)
 RESEND_API_KEY=re_xxxxxxxx
 EMAIL_FROM=San Marco <onboarding@resend.dev>
+# or SMTP_HOST / SMTP_USER / SMTP_PASS for Gmail
 
-# — or Gmail SMTP —
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=sanmarcofurnishings@gmail.com
-SMTP_PASS=your_gmail_app_password
-EMAIL_FROM=San Marco <sanmarcofurnishings@gmail.com>
 ORDER_NOTIFY_EMAIL=sanmarcofurnishings@gmail.com
+
+# Optional WhatsApp Cloud API
+WHATSAPP_TOKEN=EAAG...
+WHATSAPP_PHONE_NUMBER_ID=1234567890
 ```
 
-Checkout requires the customer’s email so the thank-you message can be delivered. Without email credentials, orders still complete; the confirmation page notes that WhatsApp follow-up will be used.
+Checkout collects email + phone. The order confirmation page always shows the thank-you message; email/WhatsApp send when credentials are configured.
 
 ## What’s included
 

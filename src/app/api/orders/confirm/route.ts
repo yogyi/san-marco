@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { emailConfigured, sendOrderEmails } from "@/lib/email";
 import type { ThankYouEmailPayload } from "@/lib/email-templates";
+import { sendPurchaseThankYou } from "@/lib/thank-you";
 
 export const runtime = "nodejs";
 
@@ -29,21 +29,28 @@ export async function POST(req: Request) {
     const items = Array.isArray(body?.items) ? body.items : [];
     const totals = body?.totals || {};
 
-    if (!orderId || !customerName || !customerEmail) {
+    if (!orderId || !customerName) {
       return NextResponse.json(
-        { error: "Missing orderId, customerName, or customerEmail" },
+        { error: "Missing orderId or customerName" },
         { status: 400 }
       );
     }
 
-    if (!isValidEmail(customerEmail)) {
+    if (!customerEmail && !phone) {
+      return NextResponse.json(
+        { error: "Email or phone required for thank-you message" },
+        { status: 400 }
+      );
+    }
+
+    if (customerEmail && !isValidEmail(customerEmail)) {
       return NextResponse.json({ error: "Invalid email address" }, { status: 400 });
     }
 
     const payload: ThankYouEmailPayload = {
       orderId,
       customerName,
-      customerEmail,
+      customerEmail: customerEmail || `no-email+${orderId}@sanmarcofurnishings.com`,
       phone,
       address,
       city,
@@ -70,24 +77,34 @@ export async function POST(req: Request) {
       total: Number(totals.total) || 0,
     };
 
-    const result = await sendOrderEmails(payload);
+    const result = await sendPurchaseThankYou(payload);
 
     return NextResponse.json({
       ok: true,
-      configured: emailConfigured(),
-      sent: result.customer.sent,
-      provider: result.customer.provider,
-      id: result.customer.id,
-      error: result.customer.error,
-      storeNotified: result.store.sent,
+      sent: result.ok,
+      message: result.message,
+      configured: result.emailConfigured || result.whatsappConfigured,
+      emailConfigured: result.emailConfigured,
+      whatsappConfigured: result.whatsappConfigured,
+      emailSent: result.emailSent,
+      whatsappSent: result.whatsappSent,
+      storeEmailSent: result.storeEmailSent,
+      storeWhatsAppLink: result.storeWhatsAppLink,
+      emailError: result.emailError,
+      whatsappError: result.whatsappError,
+      provider: result.emailSent
+        ? result.emailProvider
+        : result.whatsappSent
+          ? result.whatsappProvider
+          : "log",
     });
   } catch (error) {
-    console.error("Order confirm email error", error);
+    console.error("Order thank-you error", error);
     return NextResponse.json(
       {
         ok: false,
         sent: false,
-        error: error instanceof Error ? error.message : "Failed to send email",
+        error: error instanceof Error ? error.message : "Failed to send thank-you",
       },
       { status: 500 }
     );

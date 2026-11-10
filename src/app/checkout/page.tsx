@@ -101,11 +101,27 @@ export default function CheckoutPage() {
       });
       const data = await res.json();
       return {
-        emailSent: Boolean(data?.sent),
-        emailConfigured: Boolean(data?.configured),
+        thankYouSent: Boolean(data?.sent || data?.emailSent || data?.whatsappSent),
+        emailSent: Boolean(data?.emailSent),
+        whatsappSent: Boolean(data?.whatsappSent),
+        emailConfigured: Boolean(data?.emailConfigured),
+        whatsappConfigured: Boolean(data?.whatsappConfigured),
+        storeWhatsAppLink: String(data?.storeWhatsAppLink || ""),
+        thankYouMessage: String(
+          data?.message ||
+            `Thank you for your purchase, ${form.name}! Your San Marco order is confirmed.`
+        ),
       };
     } catch {
-      return { emailSent: false, emailConfigured: false };
+      return {
+        thankYouSent: false,
+        emailSent: false,
+        whatsappSent: false,
+        emailConfigured: false,
+        whatsappConfigured: false,
+        storeWhatsAppLink: "",
+        thankYouMessage: `Thank you for your purchase, ${form.name}! Your San Marco order is confirmed.`,
+      };
     }
   }
 
@@ -115,7 +131,7 @@ export default function CheckoutPage() {
     razorpayPaymentId?: string;
     razorpayOrderId?: string;
   }) {
-    const emailStatus = await sendThankYouEmail(meta);
+    const thankYou = await sendThankYouEmail(meta);
     const payload = {
       orderId: meta.orderId,
       items,
@@ -124,8 +140,13 @@ export default function CheckoutPage() {
       payment: meta.payment,
       razorpayPaymentId: meta.razorpayPaymentId,
       razorpayOrderId: meta.razorpayOrderId,
-      emailSent: emailStatus.emailSent,
-      emailConfigured: emailStatus.emailConfigured,
+      thankYouSent: thankYou.thankYouSent,
+      emailSent: thankYou.emailSent,
+      whatsappSent: thankYou.whatsappSent,
+      emailConfigured: thankYou.emailConfigured,
+      whatsappConfigured: thankYou.whatsappConfigured,
+      storeWhatsAppLink: thankYou.storeWhatsAppLink,
+      thankYouMessage: thankYou.thankYouMessage,
       createdAt: new Date().toISOString(),
     };
     sessionStorage.setItem("san-marco-last-order", JSON.stringify(payload));
