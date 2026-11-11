@@ -9,7 +9,7 @@ import {
 
 export type SendResult = {
   sent: boolean;
-  provider?: "resend" | "smtp" | "log";
+  provider?: "resend" | "smtp" | "relay" | "log";
   id?: string;
   error?: string;
 };
@@ -70,7 +70,8 @@ async function sendViaSmtp(opts: {
   const host = (process.env.SMTP_HOST || "smtp.gmail.com").trim();
   const port = Number(process.env.SMTP_PORT || 587);
   const user = process.env.SMTP_USER!.trim();
-  const pass = process.env.SMTP_PASS!.trim();
+  // Google app passwords are often pasted with spaces
+  const pass = process.env.SMTP_PASS!.replace(/\s+/g, "").trim();
   const isGmail = host.includes("gmail.com") || user.endsWith("@gmail.com");
 
   const transporter = nodemailer.createTransport(
@@ -106,27 +107,38 @@ async function deliver(opts: {
   text: string;
   replyTo?: string;
 }): Promise<SendResult> {
-  // Prefer Gmail SMTP when configured (San Marco brand inbox)
-  if (hasSmtp()) {
-    const result = await sendViaSmtp(opts);
-    return { sent: true, ...result };
-  }
-  if (hasResend()) {
-    const result = await sendViaResend(opts);
-    return { sent: true, ...result };
-  }
+  try {
+    if (hasSmtp()) {
+      const result = await sendViaSmtp(opts);
+      console.info("[email:smtp:sent]", { to: opts.to, id: result.id, subject: opts.subject });
+      return { sent: true, ...result };
+    }
+    if (hasResend()) {
+      const result = await sendViaResend(opts);
+      console.info("[email:resend:sent]", { to: opts.to, id: result.id, subject: opts.subject });
+      return { sent: true, ...result };
+    }
 
-  console.info("[email:log]", {
-    to: opts.to,
-    subject: opts.subject,
-    preview: opts.text.slice(0, 240),
-  });
-  return {
-    sent: false,
-    provider: "log",
-    error:
-      "Gmail SMTP not configured. Set SMTP_PASS in .env.local to the Google App Password for sanmarcofurnishings@gmail.com.",
-  };
+    console.info("[email:log]", {
+      to: opts.to,
+      subject: opts.subject,
+      preview: opts.text.slice(0, 240),
+    });
+    return {
+      sent: false,
+      provider: "log",
+      error:
+        "Gmail SMTP not configured on the server. Add SMTP_HOST, SMTP_USER, SMTP_PASS in deployment env.",
+    };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Email send failed";
+    console.error("[email:error]", { to: opts.to, subject: opts.subject, message });
+    return {
+      sent: false,
+      provider: hasSmtp() ? "smtp" : hasResend() ? "resend" : "log",
+      error: message,
+    };
+  }
 }
 
 export async function sendOrderEmails(
@@ -144,21 +156,13 @@ export async function sendOrderEmails(
     replyTo: storeInbox,
   });
 
-  let store: SendResult = { sent: false, provider: "log" };
-  try {
-    store = await deliver({
-      to: storeInbox,
-      subject: notify.subject,
-      html: notify.html,
-      text: notify.text,
-      replyTo: payload.customerEmail,
-    });
-  } catch (error) {
-    store = {
-      sent: false,
-      error: error instanceof Error ? error.message : "Store notify failed",
-    };
-  }
+  const store = await deliver({
+    to: storeInbox,
+    subject: notify.subject,
+    html: notify.html,
+    text: notify.text,
+    replyTo: payload.customerEmail,
+  });
 
   return { customer, store };
 }

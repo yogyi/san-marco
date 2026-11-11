@@ -15,6 +15,7 @@ type StoredOrder = {
   thankYouSent?: boolean;
   emailSent?: boolean;
   whatsappSent?: boolean;
+  emailError?: string;
   thankYouMessage?: string;
   storeWhatsAppLink?: string;
   shipping: { name: string; city: string; email?: string; phone?: string };
@@ -54,7 +55,10 @@ export default function OrderConfirmationPage() {
           {order?.emailSent ? (
             <p>Thank-you email sent to {order.shipping.email}.</p>
           ) : order?.shipping.email ? (
-            <p>We’ll also email {order.shipping.email} shortly.</p>
+            <p>
+              Email to {order.shipping.email} could not be sent yet
+              {order.emailError ? ` (${order.emailError})` : ""}. Our team will follow up.
+            </p>
           ) : null}
           {order?.whatsappSent ? (
             <p>Thank-you WhatsApp sent to {order.shipping.phone}.</p>

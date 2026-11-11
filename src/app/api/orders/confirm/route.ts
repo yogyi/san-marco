@@ -77,7 +77,8 @@ export async function POST(req: Request) {
       total: Number(totals.total) || 0,
     };
 
-    const result = await sendPurchaseThankYou(payload);
+    const fromRelay = req.headers.get("x-san-marco-relay") === "1";
+    const result = await sendPurchaseThankYou(payload, { fromRelay });
 
     return NextResponse.json({
       ok: true,

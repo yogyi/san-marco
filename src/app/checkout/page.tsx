@@ -109,6 +109,9 @@ export default function CheckoutPage() {
         }),
       });
       const data = await res.json();
+      if (!res.ok) {
+        console.error("Thank-you API failed", data);
+      }
       return {
         thankYouSent: Boolean(data?.sent || data?.emailSent || data?.whatsappSent),
         emailSent: Boolean(data?.emailSent),
@@ -116,12 +119,14 @@ export default function CheckoutPage() {
         emailConfigured: Boolean(data?.emailConfigured),
         whatsappConfigured: Boolean(data?.whatsappConfigured),
         storeWhatsAppLink: String(data?.storeWhatsAppLink || ""),
+        emailError: String(data?.emailError || data?.error || ""),
         thankYouMessage: String(
           data?.message ||
             `Thank you for your purchase, ${form.name}! Your San Marco order is confirmed.`
         ),
       };
-    } catch {
+    } catch (err) {
+      console.error("Thank-you request failed", err);
       return {
         thankYouSent: false,
         emailSent: false,
@@ -129,6 +134,7 @@ export default function CheckoutPage() {
         emailConfigured: false,
         whatsappConfigured: false,
         storeWhatsAppLink: "",
+        emailError: err instanceof Error ? err.message : "Thank-you request failed",
         thankYouMessage: `Thank you for your purchase, ${form.name}! Your San Marco order is confirmed.`,
       };
     }
@@ -155,6 +161,7 @@ export default function CheckoutPage() {
       emailConfigured: thankYou.emailConfigured,
       whatsappConfigured: thankYou.whatsappConfigured,
       storeWhatsAppLink: thankYou.storeWhatsAppLink,
+      emailError: thankYou.emailError,
       thankYouMessage: thankYou.thankYouMessage,
       createdAt: new Date().toISOString(),
     };
