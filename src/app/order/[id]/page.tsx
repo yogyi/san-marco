@@ -53,13 +53,19 @@ export default function OrderConfirmationPage() {
         <p className="mt-3 font-display text-2xl leading-snug text-cream">{thankYouText}</p>
         <div className="mt-4 space-y-1 text-sm text-cream/80">
           {order?.emailSent ? (
-            <p>Thank-you email sent to {order.shipping.email}.</p>
+            <p>
+              Thank-you email sent to <span className="text-gold-soft">{order.shipping.email}</span>.
+              Check inbox and spam.
+            </p>
           ) : order?.shipping.email ? (
             <p>
               Email to {order.shipping.email} could not be sent yet
-              {order.emailError ? ` (${order.emailError})` : ""}. Our team will follow up.
+              {order.emailError ? ` (${order.emailError})` : ""}. Our team will follow up on WhatsApp
+              or email shortly.
             </p>
-          ) : null}
+          ) : (
+            <p>Add an email at checkout next time to receive your thank-you confirmation.</p>
+          )}
           {order?.whatsappSent ? (
             <p>Thank-you WhatsApp sent to {order.shipping.phone}.</p>
           ) : order?.shipping.phone ? (

@@ -72,72 +72,96 @@ export default function CheckoutPage() {
     );
   }
 
+  function orderEmailPayload(meta: {
+    orderId: string;
+    payment: string;
+    razorpayPaymentId?: string;
+  }) {
+    return {
+      orderId: meta.orderId,
+      customerName: form.name.trim(),
+      customerEmail: form.email.trim(),
+      phone: form.phone.trim(),
+      address: form.address.trim(),
+      city: form.city.trim(),
+      state: form.state.trim(),
+      pincode: form.pincode.trim(),
+      notes: form.notes.trim(),
+      payment: meta.payment,
+      razorpayPaymentId: meta.razorpayPaymentId,
+      items: items.map((item) => ({
+        name: item.name,
+        variantLabel: item.variantLabel,
+        quantity: item.quantity,
+        price: item.price,
+      })),
+      totals: {
+        subtotal: totals.subtotal,
+        shipping: totals.shipping,
+        discount: totals.discount,
+        total: totals.total,
+      },
+      couponCode: totals.couponCode,
+    };
+  }
+
   async function sendThankYouEmail(meta: {
     orderId: string;
     payment: string;
     razorpayPaymentId?: string;
   }) {
-    try {
-      const res = await fetch("/api/orders/confirm", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          orderId: meta.orderId,
-          customerName: form.name,
-          customerEmail: form.email,
-          phone: form.phone,
-          address: form.address,
-          city: form.city,
-          state: form.state,
-          pincode: form.pincode,
-          notes: form.notes,
-          payment: meta.payment,
-          razorpayPaymentId: meta.razorpayPaymentId,
-          items: items.map((item) => ({
-            name: item.name,
-            variantLabel: item.variantLabel,
-            quantity: item.quantity,
-            price: item.price,
-          })),
-          totals: {
-            subtotal: totals.subtotal,
-            shipping: totals.shipping,
-            discount: totals.discount,
-            total: totals.total,
-          },
-          couponCode: totals.couponCode,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        console.error("Thank-you API failed", data);
-      }
-      return {
-        thankYouSent: Boolean(data?.sent || data?.emailSent || data?.whatsappSent),
-        emailSent: Boolean(data?.emailSent),
-        whatsappSent: Boolean(data?.whatsappSent),
-        emailConfigured: Boolean(data?.emailConfigured),
-        whatsappConfigured: Boolean(data?.whatsappConfigured),
-        storeWhatsAppLink: String(data?.storeWhatsAppLink || ""),
-        emailError: String(data?.emailError || data?.error || ""),
-        thankYouMessage: String(
-          data?.message ||
-            `Thank you for your purchase, ${form.name}! Your San Marco order is confirmed.`
-        ),
-      };
-    } catch (err) {
-      console.error("Thank-you request failed", err);
-      return {
-        thankYouSent: false,
-        emailSent: false,
-        whatsappSent: false,
-        emailConfigured: false,
-        whatsappConfigured: false,
-        storeWhatsAppLink: "",
-        emailError: err instanceof Error ? err.message : "Thank-you request failed",
-        thankYouMessage: `Thank you for your purchase, ${form.name}! Your San Marco order is confirmed.`,
-      };
+    const empty = {
+      thankYouSent: false,
+      emailSent: false,
+      whatsappSent: false,
+      emailConfigured: false,
+      whatsappConfigured: false,
+      storeWhatsAppLink: "",
+      emailError: "Thank-you request failed",
+      thankYouMessage: `Thank you for your purchase, ${form.name}! Your San Marco order is confirmed.`,
+    };
+
+    const body = orderEmailPayload(meta);
+    if (!body.customerEmail) {
+      return { ...empty, emailError: "Customer email is required for thank-you mail" };
     }
+
+    let last = empty;
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        const res = await fetch("/api/orders/confirm", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        const data = await res.json();
+        last = {
+          thankYouSent: Boolean(data?.sent || data?.emailSent || data?.whatsappSent),
+          emailSent: Boolean(data?.emailSent),
+          whatsappSent: Boolean(data?.whatsappSent),
+          emailConfigured: Boolean(data?.emailConfigured),
+          whatsappConfigured: Boolean(data?.whatsappConfigured),
+          storeWhatsAppLink: String(data?.storeWhatsAppLink || ""),
+          emailError: String(data?.emailError || data?.error || ""),
+          thankYouMessage: String(
+            data?.message ||
+              `Thank you for your purchase, ${form.name}! Your San Marco order is confirmed.`
+          ),
+        };
+        if (last.emailSent) return last;
+        console.error(`Thank-you email attempt ${attempt} failed`, data);
+      } catch (err) {
+        console.error(`Thank-you request attempt ${attempt} failed`, err);
+        last = {
+          ...empty,
+          emailError: err instanceof Error ? err.message : "Thank-you request failed",
+        };
+      }
+      if (attempt < 3) {
+        await new Promise((r) => setTimeout(r, 400 * attempt));
+      }
+    }
+    return last;
   }
 
   async function finishOrder(meta: {
@@ -176,6 +200,10 @@ export default function CheckoutPage() {
     const localOrderId = `SM${Date.now().toString().slice(-8)}`;
 
     try {
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
+        throw new Error("Please enter a valid email so we can send your thank-you confirmation.");
+      }
+
       if (payment === "cod") {
         if (!isIndia) {
           throw new Error("Cash on Delivery is only available in India.");
@@ -239,15 +267,56 @@ export default function CheckoutPage() {
           razorpay_signature?: string;
         }) => {
           try {
+            const orderPayload = orderEmailPayload({
+              orderId: localOrderId,
+              payment: "razorpay",
+              razorpayPaymentId: response.razorpay_payment_id,
+            });
             const verifyRes = await fetch("/api/razorpay/verify", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(response),
+              body: JSON.stringify({
+                ...response,
+                order: orderPayload,
+                localOrderId,
+                customerName: orderPayload.customerName,
+                customerEmail: orderPayload.customerEmail,
+              }),
             });
             const verifyData = await verifyRes.json();
             if (!verifyRes.ok || !verifyData.accepted) {
               throw new Error(verifyData?.error || "Payment verification failed");
             }
+
+            // Prefer server-side thank-you from verify; retry via confirm if needed.
+            if (verifyData.emailSent) {
+              const payload = {
+                orderId: localOrderId,
+                items,
+                totals,
+                shipping: form,
+                payment: "razorpay",
+                razorpayPaymentId: response.razorpay_payment_id,
+                razorpayOrderId: response.razorpay_order_id,
+                thankYouSent: true,
+                emailSent: true,
+                whatsappSent: false,
+                emailConfigured: true,
+                whatsappConfigured: false,
+                storeWhatsAppLink: String(verifyData.storeWhatsAppLink || ""),
+                emailError: "",
+                thankYouMessage: String(
+                  verifyData.thankYouMessage ||
+                    `Thank you for your purchase, ${form.name}! Your San Marco order is confirmed.`
+                ),
+                createdAt: new Date().toISOString(),
+              };
+              sessionStorage.setItem("san-marco-last-order", JSON.stringify(payload));
+              clear();
+              router.push(`/order/${localOrderId}`);
+              return;
+            }
+
             await finishOrder({
               orderId: localOrderId,
               payment: "razorpay",
@@ -327,15 +396,19 @@ export default function CheckoutPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">Email (thank-you mail)</Label>
                   <Input
                     id="email"
                     type="email"
                     required
+                    autoComplete="email"
                     value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
                     placeholder="We’ll send your thank-you & order confirmation"
                   />
+                  <p className="text-xs text-ink/55">
+                    Required — purchase confirmation is emailed to this address.
+                  </p>
                 </div>
                 <div className="space-y-2 md:col-span-2">
                   <Label htmlFor="address">Address</Label>
