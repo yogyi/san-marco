@@ -67,16 +67,25 @@ async function sendViaSmtp(opts: {
   text: string;
   replyTo?: string;
 }) {
+  const host = (process.env.SMTP_HOST || "smtp.gmail.com").trim();
   const port = Number(process.env.SMTP_PORT || 587);
-  const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port,
-    secure: port === 465,
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
-  });
+  const user = process.env.SMTP_USER!.trim();
+  const pass = process.env.SMTP_PASS!.trim();
+  const isGmail = host.includes("gmail.com") || user.endsWith("@gmail.com");
+
+  const transporter = nodemailer.createTransport(
+    isGmail
+      ? {
+          service: "gmail",
+          auth: { user, pass },
+        }
+      : {
+          host,
+          port,
+          secure: port === 465,
+          auth: { user, pass },
+        }
+  );
 
   const info = await transporter.sendMail({
     from: fromAddress(),
@@ -97,12 +106,13 @@ async function deliver(opts: {
   text: string;
   replyTo?: string;
 }): Promise<SendResult> {
-  if (hasResend()) {
-    const result = await sendViaResend(opts);
-    return { sent: true, ...result };
-  }
+  // Prefer Gmail SMTP when configured (San Marco brand inbox)
   if (hasSmtp()) {
     const result = await sendViaSmtp(opts);
+    return { sent: true, ...result };
+  }
+  if (hasResend()) {
+    const result = await sendViaResend(opts);
     return { sent: true, ...result };
   }
 
@@ -115,7 +125,7 @@ async function deliver(opts: {
     sent: false,
     provider: "log",
     error:
-      "Email not configured. Add RESEND_API_KEY or SMTP_HOST / SMTP_USER / SMTP_PASS.",
+      "Gmail SMTP not configured. Set SMTP_PASS in .env.local to the Google App Password for sanmarcofurnishings@gmail.com.",
   };
 }
 
