@@ -3,6 +3,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { VariantId } from "@/data/products";
+import { applyCoupon, type Coupon } from "@/data/coupons";
+import type { MarketId } from "@/data/markets";
 
 export type CartItem = {
   key: string;
@@ -24,6 +26,7 @@ export type CartItem = {
 
 type CartState = {
   items: CartItem[];
+  couponCode: string | null;
   isOpen: boolean;
   openCart: () => void;
   closeCart: () => void;
@@ -31,6 +34,8 @@ type CartState = {
   addItem: (item: Omit<CartItem, "key" | "quantity"> & { quantity?: number }) => void;
   removeItem: (key: string) => void;
   updateQty: (key: string, quantity: number) => void;
+  setCouponCode: (code: string | null) => void;
+  clearCoupon: () => void;
   clear: () => void;
 };
 
@@ -38,6 +43,7 @@ export const useCart = create<CartState>()(
   persist(
     (set, get) => ({
       items: [],
+      couponCode: null,
       isOpen: false,
       openCart: () => set({ isOpen: true }),
       closeCart: () => set({ isOpen: false }),
@@ -77,26 +83,87 @@ export const useCart = create<CartState>()(
           ),
         });
       },
-      clear: () => set({ items: [] }),
+      setCouponCode: (code) =>
+        set({ couponCode: code ? code.trim().toUpperCase() : null }),
+      clearCoupon: () => set({ couponCode: null }),
+      clear: () => set({ items: [], couponCode: null }),
     }),
     {
       name: "san-marco-cart",
-      partialize: (state) => ({ items: state.items }),
+      partialize: (state) => ({
+        items: state.items,
+        couponCode: state.couponCode,
+      }),
     }
   )
 );
 
-export function cartTotals(items: CartItem[], opts?: { freeShipping?: boolean }) {
+export type CartTotals = {
+  subtotal: number;
+  mrpTotal: number;
+  savings: number;
+  count: number;
+  shipping: number;
+  discount: number;
+  coupon: Coupon | null;
+  couponCode: string | null;
+  total: number;
+  inrCapture: number;
+  inrCaptureTotal: number;
+};
+
+export function cartTotals(
+  items: CartItem[],
+  opts?: {
+    freeShipping?: boolean;
+    couponCode?: string | null;
+    marketId?: MarketId;
+  }
+): CartTotals {
   const subtotal = items.reduce((s, i) => s + i.price * i.quantity, 0);
   const mrpTotal = items.reduce((s, i) => s + i.mrp * i.quantity, 0);
   const savings = Math.max(0, mrpTotal - subtotal);
   const count = items.reduce((s, i) => s + i.quantity, 0);
   const freeShipping = opts?.freeShipping ?? true;
-  // India + overseas retail: free shipping (overseas freight is built into local price)
-  const shipping = freeShipping || subtotal === 0 ? 0 : subtotal >= 1999 ? 0 : 99;
+  const shipping =
+    freeShipping || subtotal === 0 ? 0 : subtotal >= 1999 ? 0 : 99;
+
   const inrCapture = items.reduce(
-    (s, i) => s + (i.inrCapture ?? (i.currency === "INR" || !i.currency ? i.price : 0)) * i.quantity,
+    (s, i) =>
+      s +
+      (i.inrCapture ?? (i.currency === "INR" || !i.currency ? i.price : 0)) *
+        i.quantity,
     0
   );
-  return { subtotal, mrpTotal, savings, count, shipping, total: subtotal + shipping, inrCapture };
+
+  let discount = 0;
+  let coupon: Coupon | null = null;
+  const code = opts?.couponCode ?? null;
+  if (code) {
+    const result = applyCoupon(code, subtotal, opts?.marketId ?? "in");
+    if (result.ok) {
+      discount = result.discount;
+      coupon = result.coupon;
+    }
+  }
+
+  const total = Math.max(0, subtotal - discount + shipping);
+
+  // Scale INR capture by same discount ratio for overseas Razorpay
+  const ratio = subtotal > 0 ? (subtotal - discount) / subtotal : 1;
+  const inrCaptureTotal = Math.max(0, Math.round(inrCapture * ratio));
+
+  return {
+    subtotal,
+    mrpTotal,
+    savings,
+    count,
+    shipping,
+    discount,
+    coupon,
+    couponCode: coupon ? coupon.code : null,
+    total,
+    inrCapture,
+    inrCaptureTotal,
+  };
 }

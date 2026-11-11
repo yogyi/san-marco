@@ -13,17 +13,24 @@ import { formatMoney } from "@/lib/money";
 import { BRAND } from "@/data/products";
 import { loadRazorpayScript } from "@/lib/load-razorpay";
 import { useActiveMarket } from "@/store/market";
+import { CouponField } from "@/components/shop/coupon-field";
 
 type Step = 1 | 2 | 3;
 type PayMethod = "razorpay" | "cod";
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, clear } = useCart();
+  const { items, clear, couponCode } = useCart();
   const market = useActiveMarket();
   const isIndia = market.id === "in";
-  const totals = cartTotals(items, { freeShipping: true });
-  const payAmountInr = isIndia ? totals.total : Math.max(totals.inrCapture, 1);
+  const totals = cartTotals(items, {
+    freeShipping: true,
+    couponCode,
+    marketId: market.id,
+  });
+  const payAmountInr = isIndia
+    ? Math.max(totals.total, 1)
+    : Math.max(totals.inrCaptureTotal || totals.inrCapture, 1);
   const [step, setStep] = useState<Step>(1);
   const [payment, setPayment] = useState<PayMethod>("razorpay");
   const [placing, setPlacing] = useState(false);
@@ -95,8 +102,10 @@ export default function CheckoutPage() {
           totals: {
             subtotal: totals.subtotal,
             shipping: totals.shipping,
+            discount: totals.discount,
             total: totals.total,
           },
+          couponCode: totals.couponCode,
         }),
       });
       const data = await res.json();
@@ -183,6 +192,8 @@ export default function CheckoutPage() {
             market: market.id,
             displayTotal: `${market.currency} ${totals.total}`,
             country: form.country || market.label,
+            coupon: totals.couponCode || "",
+            discount: String(totals.discount || 0),
           },
         }),
       });
@@ -470,6 +481,11 @@ export default function CheckoutPage() {
                       : "Prepaid international (Razorpay)"}
                 </p>
                 <p className="pt-1 text-xs text-ink/55">{market.shippingLine}</p>
+                {totals.couponCode ? (
+                  <p className="pt-1 text-xs font-semibold text-burgundy">
+                    Coupon {totals.couponCode} · −{formatMoney(totals.discount, market)}
+                  </p>
+                ) : null}
                 {form.notes && <p className="pt-2 italic">Gift note: {form.notes}</p>}
               </div>
               {error ? (
@@ -521,15 +537,26 @@ export default function CheckoutPage() {
               </li>
             ))}
           </ul>
-          <div className="mt-6 space-y-2 border-t border-gold/20 pt-4 text-sm font-medium">
+          <div className="mt-5 border-t border-gold/20 pt-4">
+            <CouponField subtotal={totals.subtotal} discount={totals.discount} />
+          </div>
+          <div className="mt-5 space-y-2 border-t border-gold/20 pt-4 text-sm font-medium">
             <div className="flex justify-between">
               <span className="text-ink/55">Subtotal</span>
               <span>{formatMoney(totals.subtotal, market)}</span>
             </div>
             {totals.savings > 0 ? (
               <div className="flex justify-between">
-                <span className="text-ink/55">Savings</span>
+                <span className="text-ink/55">MRP savings</span>
                 <span>{formatMoney(totals.savings, market)}</span>
+              </div>
+            ) : null}
+            {totals.discount > 0 && totals.couponCode ? (
+              <div className="flex justify-between">
+                <span className="text-ink/55">Coupon ({totals.couponCode})</span>
+                <span className="font-semibold text-burgundy">
+                  −{formatMoney(totals.discount, market)}
+                </span>
               </div>
             ) : null}
             <div className="flex justify-between">

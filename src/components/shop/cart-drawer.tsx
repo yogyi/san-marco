@@ -8,13 +8,20 @@ import { Button } from "@/components/ui/button";
 import { useCart, cartTotals } from "@/store/cart";
 import { useActiveMarket } from "@/store/market";
 import { formatMoney } from "@/lib/money";
+import { CouponField } from "@/components/shop/coupon-field";
 
 export function CartDrawer() {
-  const { items, isOpen, openCart, closeCart, updateQty, removeItem } = useCart();
+  const { items, isOpen, openCart, closeCart, updateQty, removeItem, couponCode } =
+    useCart();
   const market = useActiveMarket();
-  const { subtotal, savings, shipping, total, count } = cartTotals(items, {
-    freeShipping: true,
-  });
+  const { subtotal, savings, shipping, total, count, discount, coupon } = cartTotals(
+    items,
+    {
+      freeShipping: true,
+      couponCode,
+      marketId: market.id,
+    }
+  );
 
   return (
     <Sheet open={isOpen} onOpenChange={(open) => (open ? openCart() : closeCart())}>
@@ -49,7 +56,9 @@ export function CartDrawer() {
                   <div className="flex-1">
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <p className="font-display text-lg leading-tight text-burgundy">{item.name}</p>
+                        <p className="font-display text-lg leading-tight text-burgundy">
+                          {item.name}
+                        </p>
                         <p className="mt-1 text-xs text-ink/55">{item.variantLabel}</p>
                       </div>
                       <button
@@ -98,23 +107,34 @@ export function CartDrawer() {
 
         {items.length > 0 && (
           <div className="space-y-3 border-t border-gold/20 bg-ivory/50 px-6 py-5">
+            <CouponField subtotal={subtotal} discount={discount} />
             <div className="flex justify-between text-sm">
               <span className="text-ink/60">Subtotal</span>
               <span className="text-burgundy">{formatMoney(subtotal, market)}</span>
             </div>
             {savings > 0 && (
               <div className="flex justify-between text-sm">
-                <span className="text-ink/60">You save</span>
+                <span className="text-ink/60">MRP savings</span>
                 <span className="text-burgundy">{formatMoney(savings, market)}</span>
               </div>
             )}
+            {discount > 0 && coupon ? (
+              <div className="flex justify-between text-sm">
+                <span className="text-ink/60">Coupon ({coupon.code})</span>
+                <span className="font-semibold text-burgundy">
+                  −{formatMoney(discount, market)}
+                </span>
+              </div>
+            ) : null}
             <div className="flex justify-between text-sm">
               <span className="text-ink/60">Shipping</span>
               <span className="text-burgundy">
                 {shipping === 0 ? "Complimentary" : formatMoney(shipping, market)}
               </span>
             </div>
-            <p className="text-[11px] font-medium leading-snug text-ink/55">{market.shippingLine}</p>
+            <p className="text-[11px] font-medium leading-snug text-ink/55">
+              {market.shippingLine}
+            </p>
             <div className="flex justify-between border-t border-gold/20 pt-3">
               <span className="font-display text-xl text-burgundy">Total</span>
               <span className="font-display text-xl text-burgundy">

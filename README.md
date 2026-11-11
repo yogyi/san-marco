@@ -44,6 +44,20 @@ Other regions use the fixed local price table from the overseas pricing brief (A
 
 Overseas PDP offers **1 Comforter** or **2-Comforter Bundle**, plus Single / Double (+10% packed-weight premium). Checkout is prepaid only (no COD). Razorpay still captures in INR using the brief’s approximate INR amounts.
 
+## Discount coupons
+
+Shoppers can apply a code in the bag or at checkout. Active codes:
+
+| Code | Offer |
+|------|--------|
+| `SANMARCO10` | 10% off (min ₹999) |
+| `WELCOME15` | 15% welcome off |
+| `FESTIVE200` | ₹200 off India (min ₹1,999) |
+| `COMFORT500` | ₹500 off India (min ₹2,999) |
+| `GIFTPACK` | 12% gifting off |
+
+Edit codes in `src/data/coupons.ts`.
+
 ## Thank-you purchase messages
 
 After every successful order (Razorpay or COD), San Marco sends a **“Thank you for your purchase”** message:
