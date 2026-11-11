@@ -1,25 +1,36 @@
 import type { MarketId } from "@/data/markets";
 
-export type CouponType = "percent" | "fixed";
+export type CouponType = "percent";
 
 export type Coupon = {
   code: string;
   type: CouponType;
-  /** Percent 1–100, or fixed amount in major currency units */
+  /** Percent only — must be between 5 and 25 */
   value: number;
   label: string;
   description: string;
   /** Minimum subtotal before discount */
   minSubtotal?: number;
-  /** Cap for percent discounts */
+  /** Cap for percent discounts (absolute amount) */
   maxDiscount?: number;
   /** Which markets can use this code; omit = all */
   markets?: MarketId[];
   active?: boolean;
 };
 
-/** Public festive coupons — codes are case-insensitive at apply time */
+export const MIN_COUPON_PERCENT = 5;
+export const MAX_COUPON_PERCENT = 25;
+
+/** Public coupons — percent only, 5%–25% */
 export const COUPONS: Coupon[] = [
+  {
+    code: "SANMARCO5",
+    type: "percent",
+    value: 5,
+    label: "5% off",
+    description: "5% off your bag — a gentle festive touch.",
+    minSubtotal: 999,
+  },
   {
     code: "SANMARCO10",
     type: "percent",
@@ -27,43 +38,30 @@ export const COUPONS: Coupon[] = [
     label: "10% off",
     description: "10% off your bag — everyday luxury, a little lighter.",
     minSubtotal: 999,
-    maxDiscount: 1500,
   },
   {
     code: "WELCOME15",
     type: "percent",
     value: 15,
     label: "15% welcome",
-    description: "Welcome offer — 15% off your first San Marco order.",
+    description: "Welcome offer — 15% off your San Marco order.",
     minSubtotal: 1299,
-    maxDiscount: 2000,
   },
   {
-    code: "FESTIVE200",
-    type: "fixed",
-    value: 200,
-    label: "₹200 off",
-    description: "Festive flat ₹200 off on India orders.",
-    minSubtotal: 1999,
-    markets: ["in"],
-  },
-  {
-    code: "COMFORT500",
-    type: "fixed",
-    value: 500,
-    label: "₹500 off",
-    description: "₹500 off when your bag is ₹2,999 or more (India).",
-    minSubtotal: 2999,
-    markets: ["in"],
-  },
-  {
-    code: "GIFTPACK",
+    code: "FESTIVE20",
     type: "percent",
-    value: 12,
-    label: "12% gifting",
-    description: "12% off for gift-ready bags and corporate warmth.",
+    value: 20,
+    label: "20% festive",
+    description: "Festive 20% off — soft loft for the season.",
     minSubtotal: 1499,
-    maxDiscount: 2500,
+  },
+  {
+    code: "GIFTPACK25",
+    type: "percent",
+    value: 25,
+    label: "25% gifting",
+    description: "Maximum 25% off for gift-ready bags.",
+    minSubtotal: 1999,
   },
 ];
 
@@ -78,6 +76,10 @@ export type CouponResult =
       ok: false;
       error: string;
     };
+
+function clampPercent(value: number) {
+  return Math.min(MAX_COUPON_PERCENT, Math.max(MIN_COUPON_PERCENT, value));
+}
 
 export function findCoupon(code: string): Coupon | undefined {
   const normalized = code.trim().toUpperCase();
@@ -94,6 +96,18 @@ export function applyCoupon(
     return { ok: false, error: "This coupon code is not valid." };
   }
 
+  if (coupon.type !== "percent") {
+    return { ok: false, error: "Only percent coupons (5%–25%) are allowed." };
+  }
+
+  const percent = clampPercent(coupon.value);
+  if (coupon.value < MIN_COUPON_PERCENT || coupon.value > MAX_COUPON_PERCENT) {
+    return {
+      ok: false,
+      error: `Coupons must be between ${MIN_COUPON_PERCENT}% and ${MAX_COUPON_PERCENT}%.`,
+    };
+  }
+
   if (coupon.markets && !coupon.markets.includes(marketId)) {
     return {
       ok: false,
@@ -108,14 +122,9 @@ export function applyCoupon(
     };
   }
 
-  let discount = 0;
-  if (coupon.type === "percent") {
-    discount = (subtotal * coupon.value) / 100;
-    if (coupon.maxDiscount != null) {
-      discount = Math.min(discount, coupon.maxDiscount);
-    }
-  } else {
-    discount = coupon.value;
+  let discount = (subtotal * percent) / 100;
+  if (coupon.maxDiscount != null) {
+    discount = Math.min(discount, coupon.maxDiscount);
   }
 
   discount = Math.min(Math.max(0, Math.round(discount)), subtotal);
@@ -125,14 +134,19 @@ export function applyCoupon(
 
   return {
     ok: true,
-    coupon,
+    coupon: { ...coupon, value: percent },
     discount,
-    message: `${coupon.label} applied — you save on this order.`,
+    message: `${percent}% off applied — you save on this order.`,
   };
 }
 
 export function listPublicCoupons(marketId: MarketId = "in") {
   return COUPONS.filter(
-    (c) => c.active !== false && (!c.markets || c.markets.includes(marketId))
+    (c) =>
+      c.active !== false &&
+      c.type === "percent" &&
+      c.value >= MIN_COUPON_PERCENT &&
+      c.value <= MAX_COUPON_PERCENT &&
+      (!c.markets || c.markets.includes(marketId))
   );
 }

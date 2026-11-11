@@ -46,17 +46,17 @@ Overseas PDP offers **1 Comforter** or **2-Comforter Bundle**, plus Single / Dou
 
 ## Discount coupons
 
-Shoppers can apply a code in the bag or at checkout. Active codes:
+Shoppers can apply a code in the bag or at checkout. **Percent only — minimum 5%, maximum 25%.**
 
 | Code | Offer |
 |------|--------|
-| `SANMARCO10` | 10% off (min ₹999) |
-| `WELCOME15` | 15% welcome off |
-| `FESTIVE200` | ₹200 off India (min ₹1,999) |
-| `COMFORT500` | ₹500 off India (min ₹2,999) |
-| `GIFTPACK` | 12% gifting off |
+| `SANMARCO5` | 5% off |
+| `SANMARCO10` | 10% off |
+| `WELCOME15` | 15% off |
+| `FESTIVE20` | 20% off |
+| `GIFTPACK25` | 25% off (max) |
 
-Edit codes in `src/data/coupons.ts`.
+Edit codes in `src/data/coupons.ts` (values outside 5–25 are rejected).
 
 ## Thank-you purchase messages
 
