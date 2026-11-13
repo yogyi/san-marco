@@ -43,3 +43,5 @@ next-env.d.ts
 # source brand packs (extracted into public/)
 uploads/
 assets/
+.env*.local
+.cursor/mcp.json

@@ -1,4 +1,9 @@
 import { NextResponse } from "next/server";
+import {
+  createDelhiverySaleOrder,
+  createDelhiverySaleOrderViaRelay,
+  delhiveryConfigured,
+} from "@/lib/delhivery";
 import type { ThankYouEmailPayload } from "@/lib/email-templates";
 import { sendPurchaseThankYou } from "@/lib/thank-you";
 
@@ -80,6 +85,55 @@ export async function POST(req: Request) {
     const fromRelay = req.headers.get("x-san-marco-relay") === "1";
     const result = await sendPurchaseThankYou(payload, { fromRelay });
 
+    // India PIN orders → create PENDING Delhivery sale order (AWB on manifest).
+    let delhivery: {
+      ok: boolean;
+      configured: boolean;
+      saleOrderId?: string;
+      awbNumber?: string;
+      shipmentStatus?: string;
+      addressValidity?: string;
+      error?: string;
+    } = { ok: false, configured: delhiveryConfigured() };
+
+    const isIndiaPin = /^\d{6}$/.test(pincode);
+    // Skip on email-relay hops so we don't double-book; primary confirm creates once.
+    if (!fromRelay && isIndiaPin && address && phone) {
+      try {
+        const shipmentInput = {
+          orderId,
+          customerName,
+          customerEmail: payload.customerEmail,
+          phone,
+          address,
+          city,
+          state,
+          pincode,
+          payment,
+          items: payload.items,
+          total: payload.total,
+        };
+        const shipment = delhiveryConfigured()
+          ? await createDelhiverySaleOrder(shipmentInput)
+          : await createDelhiverySaleOrderViaRelay(shipmentInput);
+        delhivery = {
+          ok: true,
+          configured: true,
+          saleOrderId: shipment.saleOrderId,
+          awbNumber: shipment.awbNumber,
+          shipmentStatus: shipment.shipmentStatus,
+          addressValidity: shipment.addressValidity,
+        };
+      } catch (err) {
+        console.error("Delhivery order create failed", err);
+        delhivery = {
+          ok: false,
+          configured: delhiveryConfigured(),
+          error: err instanceof Error ? err.message : "Delhivery create failed",
+        };
+      }
+    }
+
     return NextResponse.json({
       ok: true,
       sent: result.ok,
@@ -98,6 +152,7 @@ export async function POST(req: Request) {
         : result.whatsappSent
           ? result.whatsappProvider
           : "log",
+      delhivery,
     });
   } catch (error) {
     console.error("Order thank-you error", error);

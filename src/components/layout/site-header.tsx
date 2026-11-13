@@ -20,7 +20,7 @@ const rightLinks = [
   { href: "/collections/festive", label: "Festive Edit" },
   { href: "/craft", label: "Our Craft" },
   { href: "/gifting", label: "Gifting" },
-  { href: "/about", label: "Our Story" },
+  { href: "/track", label: "Track" },
 ];
 
 const mobileLinks = [...leftLinks, ...rightLinks];

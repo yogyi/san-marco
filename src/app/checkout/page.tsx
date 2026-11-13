@@ -119,6 +119,10 @@ export default function CheckoutPage() {
       storeWhatsAppLink: "",
       emailError: "Thank-you request failed",
       thankYouMessage: `Thank you for your purchase, ${form.name}! Your San Marco order is confirmed.`,
+      delhiverySaleOrderId: "",
+      delhiveryAwb: "",
+      delhiveryStatus: "",
+      delhiveryError: "",
     };
 
     const body = orderEmailPayload(meta);
@@ -147,6 +151,10 @@ export default function CheckoutPage() {
             data?.message ||
               `Thank you for your purchase, ${form.name}! Your San Marco order is confirmed.`
           ),
+          delhiverySaleOrderId: String(data?.delhivery?.saleOrderId || ""),
+          delhiveryAwb: String(data?.delhivery?.awbNumber || ""),
+          delhiveryStatus: String(data?.delhivery?.shipmentStatus || ""),
+          delhiveryError: String(data?.delhivery?.error || ""),
         };
         if (last.emailSent) return last;
         console.error(`Thank-you email attempt ${attempt} failed`, data);
@@ -187,6 +195,10 @@ export default function CheckoutPage() {
       storeWhatsAppLink: thankYou.storeWhatsAppLink,
       emailError: thankYou.emailError,
       thankYouMessage: thankYou.thankYouMessage,
+      delhiverySaleOrderId: thankYou.delhiverySaleOrderId,
+      delhiveryAwb: thankYou.delhiveryAwb,
+      delhiveryStatus: thankYou.delhiveryStatus,
+      delhiveryError: thankYou.delhiveryError,
       createdAt: new Date().toISOString(),
     };
     sessionStorage.setItem("san-marco-last-order", JSON.stringify(payload));
@@ -443,6 +455,12 @@ export default function CheckoutPage() {
                     onChange={(e) => setForm({ ...form, pincode: e.target.value })}
                     placeholder={isIndia ? "6 digits" : "Postal / ZIP"}
                   />
+                  {isIndia ? (
+                    <p className="text-xs text-ink/55">
+                      India orders ship via Delhivery from Gurugram. Tracking AWB is shared after
+                      dispatch.
+                    </p>
+                  ) : null}
                 </div>
                 {!isIndia ? (
                   <div className="space-y-2 md:col-span-2">

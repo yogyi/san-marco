@@ -23,7 +23,14 @@ export default function ShippingPage() {
             <li>Dispatch within 24–48 hours from Panipat.</li>
             <li>Metro transit typically 2–4 working days; Tier 2/3 and remote 4–7 days.</li>
             <li>Reusable San Marco gift carry bag inside courier packing.</li>
-            <li>Tracking shared on WhatsApp and email at dispatch.</li>
+            <li>India parcels move on Delhivery; tracking shared on WhatsApp and email at dispatch.</li>
+            <li>
+              After dispatch, track with your AWB on the{" "}
+              <Link href="/track" className="underline decoration-gold/50 underline-offset-4">
+                Track Order
+              </Link>{" "}
+              page.
+            </li>
           </ul>
         </section>
 

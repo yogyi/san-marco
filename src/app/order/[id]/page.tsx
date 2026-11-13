@@ -18,6 +18,10 @@ type StoredOrder = {
   emailError?: string;
   thankYouMessage?: string;
   storeWhatsAppLink?: string;
+  delhiverySaleOrderId?: string;
+  delhiveryAwb?: string;
+  delhiveryStatus?: string;
+  delhiveryError?: string;
   shipping: { name: string; city: string; email?: string; phone?: string };
 };
 
@@ -70,6 +74,20 @@ export default function OrderConfirmationPage() {
             <p>Thank-you WhatsApp sent to {order.shipping.phone}.</p>
           ) : order?.shipping.phone ? (
             <p>WhatsApp updates will reach {order.shipping.phone}.</p>
+          ) : null}
+          {order?.delhiverySaleOrderId ? (
+            <p>
+              Delhivery shipment created
+              {order.delhiveryStatus ? ` · ${order.delhiveryStatus}` : ""}.
+              {order.delhiveryAwb
+                ? ` AWB ${order.delhiveryAwb}.`
+                : " AWB will appear after warehouse manifest."}{" "}
+              <Link href="/track" className="underline decoration-gold/40 underline-offset-4">
+                Track order
+              </Link>
+            </p>
+          ) : order?.delhiveryError ? (
+            <p>Courier booking will be completed by our team shortly.</p>
           ) : null}
         </div>
       </div>
