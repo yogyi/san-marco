@@ -56,6 +56,9 @@ async function sendViaRelay(payload: ThankYouEmailPayload) {
       payment: payload.payment,
       notes: payload.notes,
       razorpayPaymentId: payload.razorpayPaymentId,
+      awbNumber: payload.awbNumber,
+      trackingUrl: payload.trackingUrl,
+      trackPageUrl: payload.trackPageUrl,
       items: payload.items,
       totals: {
         subtotal: payload.subtotal,

@@ -144,7 +144,8 @@ export async function createDelhiverySaleOrder(input: DelhiveryShipmentInput) {
   const { first, last } = splitName(input.customerName);
   const phone = normalizePhone(input.phone);
   const pin = input.pincode.trim();
-  const paymentMode = input.payment === "cod" ? "COD" : "Prepaid";
+  // Delhivery OMS expects uppercase PREPAID / COD (otherwise manifest fails).
+  const paymentMode = input.payment === "cod" ? "COD" : "PREPAID";
   const qty = Math.max(
     1,
     input.items.reduce((sum, item) => sum + (Number(item.quantity) || 1), 0)
@@ -215,13 +216,92 @@ export async function createDelhiverySaleOrder(input: DelhiveryShipmentInput) {
     throw new Error(result?.message || result?.error_code || "Delhivery create order failed");
   }
 
+  const saleOrderId = String(result.data?.id || "");
+  let awbNumber = String(result.data?.awb_number || "");
+  let shipmentStatus = String(result.data?.shipment_status || "AWAITING_LABEL");
+  let manifestError: string | undefined;
+
+  if (saleOrderId && !awbNumber) {
+    try {
+      const manifested = await manifestDelhiveryOrder(saleOrderId);
+      if (manifested.awbNumber) {
+        awbNumber = manifested.awbNumber;
+        shipmentStatus = manifested.shipmentStatus || shipmentStatus;
+      } else if (manifested.error) {
+        manifestError = manifested.error;
+      }
+    } catch (err) {
+      manifestError = err instanceof Error ? err.message : "Manifest failed";
+    }
+  }
+
   return {
-    saleOrderId: String(result.data?.id || ""),
+    saleOrderId,
     orderNumber: String(result.data?.order_number || input.orderId),
-    awbNumber: String(result.data?.awb_number || ""),
-    shipmentStatus: String(result.data?.shipment_status || "AWAITING_LABEL"),
+    awbNumber,
+    shipmentStatus,
     addressValidity: String(result.data?.shipping_address_validity || ""),
+    trackingUrl: awbNumber ? delhiveryTrackingUrl(awbNumber) : "",
+    trackPageUrl: siteTrackUrl(awbNumber, input.orderId),
+    manifestError,
     raw: result,
+  };
+}
+
+export function siteBaseUrl() {
+  return (
+    process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
+    process.env.SITE_URL?.trim() ||
+    "https://www.sanmarcofurnishings.com"
+  ).replace(/\/$/, "");
+}
+
+export function delhiveryTrackingUrl(awbNumber: string) {
+  const awb = awbNumber.trim();
+  if (!awb) return "";
+  return `https://www.delhivery.com/track/package/${encodeURIComponent(awb)}`;
+}
+
+export function siteTrackUrl(awbNumber?: string, orderId?: string) {
+  const base = `${siteBaseUrl()}/track`;
+  if (awbNumber?.trim()) return `${base}?awb=${encodeURIComponent(awbNumber.trim())}`;
+  if (orderId?.trim()) return `${base}?order=${encodeURIComponent(orderId.trim())}`;
+  return base;
+}
+
+export async function manifestDelhiveryOrder(saleOrderId: string) {
+  const result = await callDelhiveryTool<{
+    success?: boolean;
+    message?: string;
+    data?: {
+      awb_number?: string;
+      shipment_status?: string;
+      id?: string;
+    };
+  }>("manifest-order-b2c", {
+    sale_order_id: saleOrderId,
+    selected_fields: [
+      "id",
+      "awb_number",
+      "shipment_status",
+      "order_number",
+      "payment_mode",
+      "shipping_mode",
+    ],
+  });
+
+  if (!result?.success) {
+    return {
+      awbNumber: "",
+      shipmentStatus: "",
+      error: result?.message || "Manifest failed",
+    };
+  }
+
+  return {
+    awbNumber: String(result.data?.awb_number || ""),
+    shipmentStatus: String(result.data?.shipment_status || ""),
+    error: undefined as string | undefined,
   };
 }
 
@@ -323,12 +403,21 @@ export async function createDelhiverySaleOrderViaRelay(input: DelhiveryShipmentI
   if (!res.ok || !data.ok) {
     throw new Error(data.error || `Shipping relay HTTP ${res.status}`);
   }
+  const awbNumber = String(data.awbNumber || "");
   return {
     saleOrderId: String(data.saleOrderId || ""),
     orderNumber: input.orderId,
-    awbNumber: String(data.awbNumber || ""),
+    awbNumber,
     shipmentStatus: String(data.shipmentStatus || ""),
     addressValidity: String(data.addressValidity || ""),
+    trackingUrl: String(
+      (data as { trackingUrl?: string }).trackingUrl ||
+        (awbNumber ? delhiveryTrackingUrl(awbNumber) : "")
+    ),
+    trackPageUrl: String(
+      (data as { trackPageUrl?: string }).trackPageUrl || siteTrackUrl(awbNumber, input.orderId)
+    ),
+    manifestError: (data as { manifestError?: string }).manifestError,
     raw: data,
   };
 }

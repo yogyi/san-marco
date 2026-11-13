@@ -24,6 +24,12 @@ export type ThankYouEmailPayload = {
   shipping: number;
   total: number;
   razorpayPaymentId?: string;
+  /** Delhivery AWB when already manifested */
+  awbNumber?: string;
+  /** Live courier tracking URL (Delhivery) */
+  trackingUrl?: string;
+  /** San Marco track page fallback */
+  trackPageUrl?: string;
 };
 
 function paymentLabel(payment: string) {
@@ -109,6 +115,8 @@ export function buildThankYouEmail(data: ThankYouEmailPayload) {
                 }
               </div>
 
+              ${trackingBlock(data)}
+
               <p style="margin:24px 0 0;font-family:Arial,sans-serif;font-size:14px;line-height:1.6;color:#5c4548;">
                 Questions about your order? Reply to this email or WhatsApp us at
                 <a href="https://wa.me/${BRAND.whatsapp}" style="color:#6b1f2a;">${BRAND.phone}</a>.
@@ -149,6 +157,8 @@ export function buildThankYouEmail(data: ThankYouEmailPayload) {
     `Phone: ${data.phone}`,
     data.notes ? `Gift note: ${data.notes}` : "",
     ``,
+    ...trackingText(data),
+    ``,
     `Questions? WhatsApp ${BRAND.phone} or email ${BRAND.email}`,
     ``,
     `— San Marco`,
@@ -159,8 +169,42 @@ export function buildThankYouEmail(data: ThankYouEmailPayload) {
   return { subject, html, text };
 }
 
+function trackingBlock(data: ThankYouEmailPayload) {
+  const liveUrl = data.trackingUrl || data.trackPageUrl;
+  if (!liveUrl) return "";
+
+  const awbLine = data.awbNumber
+    ? `<p style="margin:0 0 12px;font-family:Arial,sans-serif;font-size:13px;color:#5c4548;">AWB / Waybill: <strong style="color:#4a1a22;">${escapeHtml(data.awbNumber)}</strong></p>`
+    : `<p style="margin:0 0 12px;font-family:Arial,sans-serif;font-size:13px;color:#5c4548;">Your live courier tracking link is ready. Use it anytime to follow your parcel.</p>`;
+
+  return `
+              <div style="margin-top:24px;padding:20px 16px;background:#6b1f2a;text-align:center;">
+                <p style="margin:0 0 6px;font-family:Arial,sans-serif;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:#d4b56a;">Live tracking</p>
+                ${awbLine}
+                <a href="${escapeHtml(liveUrl)}" style="display:inline-block;margin-top:4px;padding:12px 22px;background:#d4b56a;color:#4a1a22;font-family:Arial,sans-serif;font-size:13px;font-weight:bold;text-decoration:none;letter-spacing:0.06em;text-transform:uppercase;">
+                  Track your order
+                </a>
+                <p style="margin:14px 0 0;font-family:Arial,sans-serif;font-size:12px;line-height:1.5;color:#f3ebe0;">
+                  ${escapeHtml(liveUrl)}
+                </p>
+              </div>`;
+}
+
+function trackingText(data: ThankYouEmailPayload) {
+  const liveUrl = data.trackingUrl || data.trackPageUrl;
+  if (!liveUrl) return [] as string[];
+  return [
+    data.awbNumber ? `AWB / Waybill: ${data.awbNumber}` : "Live tracking:",
+    `Track your order: ${liveUrl}`,
+  ];
+}
+
 export function buildStoreNotifyEmail(data: ThankYouEmailPayload) {
   const subject = `New order ${data.orderId} · ${formatINR(data.total)}`;
+  const track =
+    data.trackingUrl || data.trackPageUrl
+      ? `<p>Tracking: <a href="${escapeHtml(data.trackingUrl || data.trackPageUrl || "")}">${escapeHtml(data.trackingUrl || data.trackPageUrl || "")}</a>${data.awbNumber ? ` · AWB ${escapeHtml(data.awbNumber)}` : ""}</p>`
+      : "";
   const html = `<p><strong>New San Marco order</strong></p>
 <p>Order <strong>${escapeHtml(data.orderId)}</strong> from ${escapeHtml(data.customerName)} (${escapeHtml(data.customerEmail)} / ${escapeHtml(data.phone)})</p>
 <p>Total: ${formatINR(data.total)} · ${escapeHtml(paymentLabel(data.payment))}</p>
@@ -170,8 +214,15 @@ export function buildStoreNotifyEmail(data: ThankYouEmailPayload) {
         `<li>${escapeHtml(i.name)} — ${escapeHtml(i.variantLabel)} ×${i.quantity} (${formatINR(i.price * i.quantity)})</li>`
     )
     .join("")}</ul>
-<p>${escapeHtml(data.address)}, ${escapeHtml(data.city)}${data.state ? `, ${escapeHtml(data.state)}` : ""} ${escapeHtml(data.pincode)}</p>`;
-  const text = `New order ${data.orderId} · ${formatINR(data.total)} from ${data.customerName}`;
+<p>${escapeHtml(data.address)}, ${escapeHtml(data.city)}${data.state ? `, ${escapeHtml(data.state)}` : ""} ${escapeHtml(data.pincode)}</p>
+${track}`;
+  const text = [
+    `New order ${data.orderId} · ${formatINR(data.total)} from ${data.customerName}`,
+    data.awbNumber ? `AWB ${data.awbNumber}` : "",
+    data.trackingUrl || data.trackPageUrl || "",
+  ]
+    .filter(Boolean)
+    .join("\n");
   return { subject, html, text };
 }
 

@@ -47,7 +47,14 @@ export async function POST(req: Request) {
     return NextResponse.json({
       ok: true,
       configured: true,
-      ...shipment,
+      saleOrderId: shipment.saleOrderId,
+      orderNumber: shipment.orderNumber,
+      awbNumber: shipment.awbNumber,
+      shipmentStatus: shipment.shipmentStatus,
+      addressValidity: shipment.addressValidity,
+      trackingUrl: shipment.trackingUrl,
+      trackPageUrl: shipment.trackPageUrl,
+      manifestError: shipment.manifestError,
     });
   } catch (error) {
     console.error("Delhivery create error", error);

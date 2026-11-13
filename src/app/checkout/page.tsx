@@ -123,6 +123,8 @@ export default function CheckoutPage() {
       delhiveryAwb: "",
       delhiveryStatus: "",
       delhiveryError: "",
+      trackingUrl: "",
+      trackPageUrl: "",
     };
 
     const body = orderEmailPayload(meta);
@@ -152,9 +154,11 @@ export default function CheckoutPage() {
               `Thank you for your purchase, ${form.name}! Your San Marco order is confirmed.`
           ),
           delhiverySaleOrderId: String(data?.delhivery?.saleOrderId || ""),
-          delhiveryAwb: String(data?.delhivery?.awbNumber || ""),
+          delhiveryAwb: String(data?.awbNumber || data?.delhivery?.awbNumber || ""),
           delhiveryStatus: String(data?.delhivery?.shipmentStatus || ""),
           delhiveryError: String(data?.delhivery?.error || ""),
+          trackingUrl: String(data?.trackingUrl || data?.delhivery?.trackingUrl || ""),
+          trackPageUrl: String(data?.trackPageUrl || data?.delhivery?.trackPageUrl || ""),
         };
         if (last.emailSent) return last;
         console.error(`Thank-you email attempt ${attempt} failed`, data);
@@ -199,6 +203,8 @@ export default function CheckoutPage() {
       delhiveryAwb: thankYou.delhiveryAwb,
       delhiveryStatus: thankYou.delhiveryStatus,
       delhiveryError: thankYou.delhiveryError,
+      trackingUrl: thankYou.trackingUrl,
+      trackPageUrl: thankYou.trackPageUrl,
       createdAt: new Date().toISOString(),
     };
     sessionStorage.setItem("san-marco-last-order", JSON.stringify(payload));

@@ -22,6 +22,8 @@ type StoredOrder = {
   delhiveryAwb?: string;
   delhiveryStatus?: string;
   delhiveryError?: string;
+  trackingUrl?: string;
+  trackPageUrl?: string;
   shipping: { name: string; city: string; email?: string; phone?: string };
 };
 
@@ -75,16 +77,17 @@ export default function OrderConfirmationPage() {
           ) : order?.shipping.phone ? (
             <p>WhatsApp updates will reach {order.shipping.phone}.</p>
           ) : null}
-          {order?.delhiverySaleOrderId ? (
+          {order?.trackingUrl || order?.trackPageUrl || order?.delhiverySaleOrderId ? (
             <p>
-              Delhivery shipment created
-              {order.delhiveryStatus ? ` · ${order.delhiveryStatus}` : ""}.
-              {order.delhiveryAwb
-                ? ` AWB ${order.delhiveryAwb}.`
-                : " AWB will appear after warehouse manifest."}{" "}
-              <Link href="/track" className="underline decoration-gold/40 underline-offset-4">
-                Track order
-              </Link>
+              {order.delhiveryAwb ? `AWB ${order.delhiveryAwb}. ` : "Tracking link sent to your email. "}
+              <a
+                href={order.trackingUrl || order.trackPageUrl || "/track"}
+                target="_blank"
+                rel="noreferrer"
+                className="underline decoration-gold/40 underline-offset-4"
+              >
+                Open live tracking
+              </a>
             </p>
           ) : order?.delhiveryError ? (
             <p>Courier booking will be completed by our team shortly.</p>

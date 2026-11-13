@@ -3,6 +3,7 @@ import {
   createDelhiverySaleOrder,
   createDelhiverySaleOrderViaRelay,
   delhiveryConfigured,
+  siteTrackUrl,
 } from "@/lib/delhivery";
 import type { ThankYouEmailPayload } from "@/lib/email-templates";
 import { sendPurchaseThankYou } from "@/lib/thank-you";
@@ -83,9 +84,8 @@ export async function POST(req: Request) {
     };
 
     const fromRelay = req.headers.get("x-san-marco-relay") === "1";
-    const result = await sendPurchaseThankYou(payload, { fromRelay });
 
-    // India PIN orders → create PENDING Delhivery sale order (AWB on manifest).
+    // India PIN → create Delhivery first so thank-you email can include live tracking.
     let delhivery: {
       ok: boolean;
       configured: boolean;
@@ -93,11 +93,13 @@ export async function POST(req: Request) {
       awbNumber?: string;
       shipmentStatus?: string;
       addressValidity?: string;
+      trackingUrl?: string;
+      trackPageUrl?: string;
+      manifestError?: string;
       error?: string;
     } = { ok: false, configured: delhiveryConfigured() };
 
     const isIndiaPin = /^\d{6}$/.test(pincode);
-    // Skip on email-relay hops so we don't double-book; primary confirm creates once.
     if (!fromRelay && isIndiaPin && address && phone) {
       try {
         const shipmentInput = {
@@ -116,6 +118,12 @@ export async function POST(req: Request) {
         const shipment = delhiveryConfigured()
           ? await createDelhiverySaleOrder(shipmentInput)
           : await createDelhiverySaleOrderViaRelay(shipmentInput);
+
+        payload.awbNumber = shipment.awbNumber || undefined;
+        payload.trackingUrl = shipment.trackingUrl || undefined;
+        payload.trackPageUrl =
+          shipment.trackPageUrl || siteTrackUrl(shipment.awbNumber, orderId);
+
         delhivery = {
           ok: true,
           configured: true,
@@ -123,16 +131,30 @@ export async function POST(req: Request) {
           awbNumber: shipment.awbNumber,
           shipmentStatus: shipment.shipmentStatus,
           addressValidity: shipment.addressValidity,
+          trackingUrl: shipment.trackingUrl || payload.trackingUrl,
+          trackPageUrl: payload.trackPageUrl,
+          manifestError: shipment.manifestError,
         };
       } catch (err) {
         console.error("Delhivery order create failed", err);
+        payload.trackPageUrl = siteTrackUrl(undefined, orderId);
         delhivery = {
           ok: false,
           configured: delhiveryConfigured(),
+          trackPageUrl: payload.trackPageUrl,
           error: err instanceof Error ? err.message : "Delhivery create failed",
         };
       }
+    } else if (body?.trackingUrl || body?.awbNumber || body?.trackPageUrl) {
+      // Relay / follow-up may already carry tracking details.
+      payload.awbNumber = body?.awbNumber ? String(body.awbNumber) : undefined;
+      payload.trackingUrl = body?.trackingUrl ? String(body.trackingUrl) : undefined;
+      payload.trackPageUrl = body?.trackPageUrl
+        ? String(body.trackPageUrl)
+        : siteTrackUrl(payload.awbNumber, orderId);
     }
+
+    const result = await sendPurchaseThankYou(payload, { fromRelay });
 
     return NextResponse.json({
       ok: true,
@@ -152,6 +174,9 @@ export async function POST(req: Request) {
         : result.whatsappSent
           ? result.whatsappProvider
           : "log",
+      trackingUrl: payload.trackingUrl || delhivery.trackingUrl || "",
+      trackPageUrl: payload.trackPageUrl || delhivery.trackPageUrl || "",
+      awbNumber: payload.awbNumber || delhivery.awbNumber || "",
       delhivery,
     });
   } catch (error) {
