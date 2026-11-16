@@ -21,7 +21,7 @@ export type Coupon = {
 export const MIN_COUPON_PERCENT = 5;
 export const MAX_COUPON_PERCENT = 25;
 
-/** Public coupons — percent only, 5%–25% */
+/** Private campaign coupons — percent only, 5%–25%. Never display codes on the website. */
 export const COUPONS: Coupon[] = [
   {
     code: "SANMARCO5",

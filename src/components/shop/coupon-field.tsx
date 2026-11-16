@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Tag, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { applyCoupon, listPublicCoupons } from "@/data/coupons";
+import { applyCoupon } from "@/data/coupons";
 import { useCart } from "@/store/cart";
 import { useActiveMarket } from "@/store/market";
 import { formatMoney } from "@/lib/money";
@@ -14,11 +14,11 @@ export function CouponField({
   subtotal,
   discount,
   className,
-  showHints = true,
 }: {
   subtotal: number;
   discount: number;
   className?: string;
+  /** @deprecated Codes are never shown on the site — kept for call-site compat */
   showHints?: boolean;
 }) {
   const market = useActiveMarket();
@@ -28,8 +28,6 @@ export function CouponField({
   const [draft, setDraft] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
-  const hints = listPublicCoupons(market.id).slice(0, 3);
 
   function apply() {
     setError("");
@@ -55,7 +53,7 @@ export function CouponField({
     <div className={cn("space-y-2", className)}>
       <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.16em] text-burgundy">
         <Tag className="h-3.5 w-3.5 text-gold-deep" />
-        Discount coupon
+        Have a coupon?
       </p>
 
       {couponCode && discount > 0 ? (
@@ -105,12 +103,6 @@ export function CouponField({
       ) : null}
       {success ? (
         <p className="text-xs font-semibold text-gold-deep">{success}</p>
-      ) : null}
-
-      {showHints && !couponCode ? (
-        <p className="text-[11px] font-medium text-ink/50">
-          Try {hints.map((h) => h.code).join(" · ")}
-        </p>
       ) : null}
     </div>
   );

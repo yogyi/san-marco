@@ -46,9 +46,7 @@ export function SiteHeader() {
   return (
     <>
       <div className="bg-burgundy py-2.5 text-center text-[11px] uppercase tracking-[0.18em] text-cream/90">
-        {market.id === "in"
-          ? `${topBar} · Coupons 5%–25%: SANMARCO10 · FESTIVE20 · GIFTPACK25`
-          : topBar}
+        {topBar}
       </div>
       <header
         className={cn(
